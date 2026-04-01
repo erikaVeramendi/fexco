@@ -1,0 +1,4 @@
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/cidtecuc/public_html/test-ia/
+    - /bin/cp -R test/dist/* $DEPLOYPATH
