@@ -92,95 +92,56 @@ const ICONS = {
   ),
 };
 
-// ─── ROBOT SVG ANIMADO (estilo circuito del banner) ────────────────────────────
-function RobotIcon({ size = 160, color = "#CDF815" }) {
+// ─── ROBOT IMAGE (usa robot.png) — usado en TODAS las pantallas ───────────────
+function RobotImage({ size = 260, style = {} }) {
   return (
-    <svg width={size} height={size * 1.25} viewBox="0 0 160 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <line x1="80" y1="8" x2="80" y2="28" stroke={color} strokeWidth="2" strokeLinecap="round"/>
-      <circle cx="80" cy="5" r="4" stroke={color} strokeWidth="2" fill="none"/>
-      <circle cx="80" cy="5" r="1.5" fill={color}/>
-      <rect x="38" y="28" width="84" height="62" rx="12" stroke={color} strokeWidth="2" fill="none"/>
-      <rect x="50" y="44" width="22" height="16" rx="5" stroke={color} strokeWidth="2" fill="none"/>
-      <rect x="88" y="44" width="22" height="16" rx="5" stroke={color} strokeWidth="2" fill="none"/>
-      <circle cx="57" cy="51" r="4" fill={color} opacity="0.9"/>
-      <circle cx="99" cy="51" r="4" fill={color} opacity="0.9"/>
-      <rect x="54" y="70" width="52" height="9" rx="4.5" stroke={color} strokeWidth="1.5" fill="none"/>
-      <line x1="63" y1="70" x2="63" y2="79" stroke={color} strokeWidth="1.2"/>
-      <line x1="72" y1="70" x2="72" y2="79" stroke={color} strokeWidth="1.2"/>
-      <line x1="80" y1="70" x2="80" y2="79" stroke={color} strokeWidth="1.2"/>
-      <line x1="88" y1="70" x2="88" y2="79" stroke={color} strokeWidth="1.2"/>
-      <line x1="97" y1="70" x2="97" y2="79" stroke={color} strokeWidth="1.2"/>
-      <rect x="24" y="42" width="14" height="30" rx="5" stroke={color} strokeWidth="1.5" fill="none"/>
-      <line x1="24" y1="52" x2="38" y2="52" stroke={color} strokeWidth="1.2"/>
-      <line x1="24" y1="60" x2="38" y2="60" stroke={color} strokeWidth="1.2"/>
-      <rect x="122" y="42" width="14" height="30" rx="5" stroke={color} strokeWidth="1.5" fill="none"/>
-      <line x1="122" y1="52" x2="136" y2="52" stroke={color} strokeWidth="1.2"/>
-      <line x1="122" y1="60" x2="136" y2="60" stroke={color} strokeWidth="1.2"/>
-      <rect x="66" y="90" width="28" height="12" rx="4" stroke={color} strokeWidth="1.5" fill="none"/>
-      <rect x="28" y="102" width="104" height="68" rx="10" stroke={color} strokeWidth="2" fill="none"/>
-      <rect x="46" y="114" width="68" height="42" rx="7" stroke={color} strokeWidth="1.5" fill="none"/>
-      <circle cx="80" cy="135" r="15" stroke={color} strokeWidth="1.5" fill="none"/>
-      <circle cx="80" cy="135" r="7" stroke={color} strokeWidth="1.5" fill="none"/>
-      <circle cx="80" cy="135" r="2.5" fill={color}/>
-      <line x1="46" y1="124" x2="62" y2="124" stroke={color} strokeWidth="1.2" strokeLinecap="round"/>
-      <line x1="46" y1="130" x2="58" y2="130" stroke={color} strokeWidth="1.2" strokeLinecap="round"/>
-      <line x1="98" y1="124" x2="114" y2="124" stroke={color} strokeWidth="1.2" strokeLinecap="round"/>
-      <line x1="102" y1="130" x2="114" y2="130" stroke={color} strokeWidth="1.2" strokeLinecap="round"/>
-      <rect x="2" y="106" width="26" height="48" rx="8" stroke={color} strokeWidth="1.5" fill="none"/>
-      <line x1="2" y1="120" x2="28" y2="120" stroke={color} strokeWidth="1.2"/>
-      <line x1="2" y1="130" x2="28" y2="130" stroke={color} strokeWidth="1.2"/>
-      <rect x="132" y="106" width="26" height="48" rx="8" stroke={color} strokeWidth="1.5" fill="none"/>
-      <line x1="132" y1="120" x2="158" y2="120" stroke={color} strokeWidth="1.2"/>
-      <line x1="132" y1="130" x2="158" y2="130" stroke={color} strokeWidth="1.2"/>
-      <rect x="5" y="154" width="20" height="12" rx="4" stroke={color} strokeWidth="1.2" fill="none"/>
-      <rect x="135" y="154" width="20" height="12" rx="4" stroke={color} strokeWidth="1.2" fill="none"/>
-      <rect x="42" y="170" width="30" height="22" rx="6" stroke={color} strokeWidth="1.5" fill="none"/>
-      <rect x="88" y="170" width="30" height="22" rx="6" stroke={color} strokeWidth="1.5" fill="none"/>
-      <rect x="38" y="192" width="38" height="8" rx="4" stroke={color} strokeWidth="1.2" fill="none"/>
-      <rect x="84" y="192" width="38" height="8" rx="4" stroke={color} strokeWidth="1.2" fill="none"/>
-    </svg>
+    <img
+      src="robot.png"
+      alt="Robot IA"
+      style={{
+        width: size,
+        height: "auto",
+        objectFit: "contain",
+        display: "block",
+        ...style,
+      }}
+    />
   );
 }
 
-// ─── PANEL DE CIRCUITO (igual al banner — columnas laterales) ─────────────────
-function CircuitPanel({ color = "#CDF815", size = 180 }) {
-  const h = size * 1.5;
+// ─── CIRCUITOS DECORATIVOS (esquinas del panel derecho intro) ─────────────────
+function CircuitCorner({ color = "#CDF815", flip = false, size = 120 }) {
+  const style = flip ? { transform: "scaleX(-1)" } : {};
   return (
-    <svg width={size} height={h} viewBox="0 0 120 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="5" y="5" width="110" height="170" rx="6" stroke={color} strokeWidth="1.2" fill="none"/>
-      <rect x="15" y="15" width="35" height="28" rx="3" stroke={color} strokeWidth="1" fill="none"/>
-      <line x1="15" y1="24" x2="35" y2="24" stroke={color} strokeWidth="0.8"/>
-      <line x1="15" y1="30" x2="30" y2="30" stroke={color} strokeWidth="0.8"/>
-      <rect x="70" y="15" width="35" height="28" rx="3" stroke={color} strokeWidth="1" fill="none"/>
-      <line x1="70" y1="24" x2="90" y2="24" stroke={color} strokeWidth="0.8"/>
-      <line x1="70" y1="30" x2="85" y2="30" stroke={color} strokeWidth="0.8"/>
-      <line x1="5" y1="50" x2="0" y2="50" stroke={color} strokeWidth="1"/>
-      <line x1="5" y1="60" x2="0" y2="60" stroke={color} strokeWidth="1"/>
-      <line x1="5" y1="70" x2="0" y2="70" stroke={color} strokeWidth="1"/>
-      <circle cx="0" cy="50" r="2.5" fill={color} opacity="0.7"/>
-      <circle cx="0" cy="60" r="2.5" fill={color} opacity="0.7"/>
-      <circle cx="0" cy="70" r="2.5" fill={color} opacity="0.7"/>
-      <line x1="115" y1="50" x2="120" y2="50" stroke={color} strokeWidth="1"/>
-      <line x1="115" y1="60" x2="120" y2="60" stroke={color} strokeWidth="1"/>
-      <line x1="115" y1="70" x2="120" y2="70" stroke={color} strokeWidth="1"/>
-      <circle cx="120" cy="50" r="2.5" fill={color} opacity="0.7"/>
-      <circle cx="120" cy="60" r="2.5" fill={color} opacity="0.7"/>
-      <circle cx="120" cy="70" r="2.5" fill={color} opacity="0.7"/>
-      <circle cx="60" cy="110" r="38" stroke={color} strokeWidth="1.2" fill="none"/>
-      <circle cx="60" cy="110" r="24" stroke={color} strokeWidth="0.8" fill="none" strokeDasharray="3 3"/>
-      <circle cx="60" cy="110" r="10" stroke={color} strokeWidth="1.2" fill="none"/>
-      <circle cx="60" cy="110" r="3" fill={color} opacity="0.9"/>
-      <line x1="60" y1="72" x2="60" y2="82" stroke={color} strokeWidth="1.2"/>
-      <line x1="60" y1="138" x2="60" y2="148" stroke={color} strokeWidth="1.2"/>
-      <line x1="22" y1="110" x2="32" y2="110" stroke={color} strokeWidth="1.2"/>
-      <line x1="88" y1="110" x2="98" y2="110" stroke={color} strokeWidth="1.2"/>
-      <rect x="15" y="158" width="90" height="14" rx="3" stroke={color} strokeWidth="0.8" fill="none"/>
-      <line x1="22" y1="165" x2="55" y2="165" stroke={color} strokeWidth="0.8"/>
-      <circle cx="70" cy="165" r="3" stroke={color} strokeWidth="0.8" fill="none"/>
-      <circle cx="84" cy="165" r="3" stroke={color} strokeWidth="0.8" fill="none"/>
-      <circle cx="98" cy="165" r="3" stroke={color} strokeWidth="0.8" fill="none"/>
-      <line x1="60" y1="172" x2="60" y2="180" stroke={color} strokeWidth="1"/>
-      <circle cx="60" cy="180" r="2.5" fill={color} opacity="0.6"/>
+    <svg width={size} height={size * 1.6} viewBox="0 0 100 160" fill="none" xmlns="http://www.w3.org/2000/svg" style={style}>
+      <rect x="5" y="5" width="90" height="150" rx="5" stroke={color} strokeWidth="1" fill="none"/>
+      <rect x="12" y="12" width="30" height="22" rx="3" stroke={color} strokeWidth="0.8" fill="none"/>
+      <line x1="12" y1="20" x2="30" y2="20" stroke={color} strokeWidth="0.7"/>
+      <line x1="12" y1="26" x2="26" y2="26" stroke={color} strokeWidth="0.7"/>
+      <rect x="58" y="12" width="30" height="22" rx="3" stroke={color} strokeWidth="0.8" fill="none"/>
+      <line x1="58" y1="20" x2="76" y2="20" stroke={color} strokeWidth="0.7"/>
+      <line x1="58" y1="26" x2="72" y2="26" stroke={color} strokeWidth="0.7"/>
+      <line x1="5" y1="42" x2="0" y2="42" stroke={color} strokeWidth="0.9"/>
+      <line x1="5" y1="52" x2="0" y2="52" stroke={color} strokeWidth="0.9"/>
+      <circle cx="0" cy="42" r="2" fill={color} opacity="0.7"/>
+      <circle cx="0" cy="52" r="2" fill={color} opacity="0.7"/>
+      <line x1="95" y1="42" x2="100" y2="42" stroke={color} strokeWidth="0.9"/>
+      <line x1="95" y1="52" x2="100" y2="52" stroke={color} strokeWidth="0.9"/>
+      <circle cx="100" cy="42" r="2" fill={color} opacity="0.7"/>
+      <circle cx="100" cy="52" r="2" fill={color} opacity="0.7"/>
+      <circle cx="50" cy="100" r="30" stroke={color} strokeWidth="1" fill="none"/>
+      <circle cx="50" cy="100" r="18" stroke={color} strokeWidth="0.7" fill="none" strokeDasharray="3 3"/>
+      <circle cx="50" cy="100" r="7" stroke={color} strokeWidth="1" fill="none"/>
+      <circle cx="50" cy="100" r="2.5" fill={color} opacity="0.9"/>
+      <line x1="50" y1="70" x2="50" y2="78" stroke={color} strokeWidth="1"/>
+      <line x1="50" y1="122" x2="50" y2="130" stroke={color} strokeWidth="1"/>
+      <line x1="20" y1="100" x2="28" y2="100" stroke={color} strokeWidth="1"/>
+      <line x1="72" y1="100" x2="80" y2="100" stroke={color} strokeWidth="1"/>
+      <rect x="12" y="143" width="76" height="10" rx="2" stroke={color} strokeWidth="0.7" fill="none"/>
+      <line x1="18" y1="148" x2="44" y2="148" stroke={color} strokeWidth="0.7"/>
+      <circle cx="58" cy="148" r="2.5" stroke={color} strokeWidth="0.7" fill="none"/>
+      <circle cx="70" cy="148" r="2.5" stroke={color} strokeWidth="0.7" fill="none"/>
+      <circle cx="82" cy="148" r="2.5" stroke={color} strokeWidth="0.7" fill="none"/>
     </svg>
   );
 }
@@ -301,6 +262,7 @@ const css = `
     animation:floatRobot 4s ease-in-out infinite;
     filter:drop-shadow(0 0 18px rgba(205,248,21,0.5));
   }
+  .side-robot-wrap img{width:140px;height:auto;object-fit:contain;}
   @keyframes floatRobot{0%,100%{transform:translateY(0) rotate(-1deg);}50%{transform:translateY(-13px) rotate(1deg);}}
   .side-badge{
     display:inline-flex;align-items:center;gap:7px;font-size:9px;font-weight:700;
@@ -324,9 +286,10 @@ const css = `
   /* INTRO */
   .intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;width:100%;min-height:100vh;align-items:stretch;}
   .intro-left{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:4rem 4rem 4rem 5rem;border-right:1px solid rgba(205,248,21,0.1);position:relative;overflow:hidden;}
-  .intro-right{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:3rem;background:rgba(0,0,0,0.12);position:relative;overflow:hidden;}
-  .intro-circuit-l{position:absolute;left:-25px;top:50%;transform:translateY(-50%);opacity:0.35;}
-  .intro-circuit-r{position:absolute;right:-25px;top:50%;transform:translateY(-50%) scaleX(-1);opacity:0.35;}
+  .intro-right{
+    display:flex;flex-direction:column;justify-content:center;align-items:center;
+    padding:3rem 2rem;background:rgba(0,0,0,0.12);position:relative;overflow:hidden;
+  }
   .intro-logo-wrap{margin-bottom:1.75rem;}
   .intro-tagline{font-size:10px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:rgba(205,248,21,0.65);margin-bottom:1.25rem;}
   .intro-badge{display:inline-flex;align-items:center;gap:7px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#CDF815;border:1px solid rgba(205,248,21,0.28);background:rgba(205,248,21,0.07);padding:7px 16px;border-radius:50px;margin-bottom:1.5rem;}
@@ -344,7 +307,33 @@ const css = `
   }
   .btn-start:hover{background:#CDF815;color:#001621;box-shadow:0 0 45px rgba(205,248,21,0.5);transform:translateY(-2px);}
   .btn-start:active{transform:scale(0.98);}
-  .intro-robot-wrap{animation:floatRobot 4s ease-in-out infinite;filter:drop-shadow(0 0 28px rgba(205,248,21,0.6));margin-bottom:1.25rem;}
+
+  /* Robot imagen intro */
+  .intro-robot-wrap{
+    position:relative;z-index:2;
+    animation:floatRobot 4s ease-in-out infinite;
+    filter:drop-shadow(0 0 40px rgba(205,248,21,0.55)) drop-shadow(0 0 80px rgba(205,248,21,0.25));
+    margin-bottom:1.5rem;
+  }
+  .intro-robot-wrap img{
+    width:clamp(220px,20vw,320px);
+    height:auto;
+    display:block;
+    object-fit:contain;
+  }
+
+  /* Circuitos decorativos intro-right */
+  .intro-circuit-corner-l{
+    position:absolute;left:-8px;top:50%;transform:translateY(-50%);
+    opacity:0.32;pointer-events:none;z-index:1;
+  }
+  .intro-circuit-corner-r{
+    position:absolute;right:-8px;top:50%;transform:translateY(-50%) scaleX(-1);
+    opacity:0.32;pointer-events:none;z-index:1;
+  }
+  .intro-circuit-top{position:absolute;top:14px;left:50%;transform:translateX(-50%);opacity:0.3;pointer-events:none;z-index:1;}
+  .intro-circuit-bottom{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);opacity:0.3;pointer-events:none;z-index:1;}
+
   .stats-row{display:flex;gap:2.25rem;margin-top:1.75rem;}
   .stat-item{text-align:center;}
   .stat-num{font-family:'Poppins',sans-serif;font-size:28px;font-weight:900;color:#CDF815;display:block;line-height:1;margin-bottom:4px;text-shadow:0 0 14px rgba(205,248,21,0.5);}
@@ -438,6 +427,7 @@ const css = `
   @keyframes loadingFadeOut{from{opacity:1;}to{opacity:0;pointer-events:none;}}
   .loading-center{display:flex;flex-direction:column;align-items:center;}
   .loading-robot-wrap{margin-bottom:1.75rem;filter:drop-shadow(0 0 28px rgba(205,248,21,0.7));animation:floatRobot 2s ease-in-out infinite;}
+  .loading-robot-wrap img{width:130px;height:auto;object-fit:contain;}
   .loading-title{font-family:'Poppins',sans-serif;font-size:clamp(26px,5vw,44px);font-weight:900;color:#CDF815;letter-spacing:5px;margin-bottom:0.45rem;text-transform:uppercase;text-shadow:0 0 28px rgba(205,248,21,0.6);animation:titleReveal 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s both;}
   @keyframes titleReveal{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
   .loading-subtitle{font-size:12px;color:rgba(255,255,255,0.45);margin-bottom:1.25rem;animation:titleReveal 0.7s 0.5s both;}
@@ -462,6 +452,7 @@ const css = `
     .intro-right{padding:2.25rem 2rem;}
     .side-panel{display:none;}
     .main-panel{padding:2rem 1.5rem;padding-bottom:4rem;}
+    .intro-robot-wrap img{width:clamp(180px,40vw,260px);}
   }
   @media (max-width:640px){
     .intro-left{padding:2.25rem 1.25rem 1.5rem;}
@@ -473,17 +464,26 @@ const css = `
     .mesa-card:last-child:nth-child(odd){grid-column:auto;}
     .stats-row{gap:1.5rem;}
     .btn-start{padding:12px 26px;font-size:12px;}
+    .intro-robot-wrap img{width:clamp(160px,50vw,220px);}
   }
 `;
 
-// ─── BG DECO (paneles circuito esquinas como en el banner) ────────────────────
+// ─── BG DECO ──────────────────────────────────────────────────────────────────
 function BgDeco() {
   return (
     <div className="circuit-deco">
-      <div style={{ position:"absolute", left:-18, top:"8%", opacity:0.1 }}><CircuitPanel color="#CDF815" size={160} /></div>
-      <div style={{ position:"absolute", right:-18, top:"8%", opacity:0.1, transform:"scaleX(-1)" }}><CircuitPanel color="#CDF815" size={160} /></div>
-      <div style={{ position:"absolute", left:-18, bottom:"4%", opacity:0.07 }}><CircuitPanel color="#CDF815" size={120} /></div>
-      <div style={{ position:"absolute", right:-18, bottom:"4%", opacity:0.07, transform:"scaleX(-1)" }}><CircuitPanel color="#CDF815" size={120} /></div>
+      <div style={{ position:"absolute", left:-18, top:"8%", opacity:0.08 }}>
+        <CircuitCorner color="#CDF815" size={140} />
+      </div>
+      <div style={{ position:"absolute", right:-18, top:"8%", opacity:0.08 }}>
+        <CircuitCorner color="#CDF815" size={140} flip={true} />
+      </div>
+      <div style={{ position:"absolute", left:-18, bottom:"4%", opacity:0.05 }}>
+        <CircuitCorner color="#CDF815" size={100} />
+      </div>
+      <div style={{ position:"absolute", right:-18, bottom:"4%", opacity:0.05 }}>
+        <CircuitCorner color="#CDF815" size={100} flip={true} />
+      </div>
       <div style={{ position:"absolute", top:10, left:"50%", transform:"translateX(-50%)", opacity:0.25 }}>
         <svg width="140" height="22" fill="none"><line x1="0" y1="11" x2="58" y2="11" stroke="#CDF815" strokeWidth="1"/><circle cx="63" cy="11" r="4.5" stroke="#CDF815" strokeWidth="1" fill="none"/><line x1="68" y1="11" x2="140" y2="11" stroke="#CDF815" strokeWidth="1"/></svg>
       </div>
@@ -521,6 +521,7 @@ function MesasExperiencia({ primaryKey }) {
 function IntroScreen({ onStart }) {
   return (
     <div className="intro-grid screen-enter">
+      {/* ── LADO IZQUIERDO ── */}
       <div className="intro-left">
         <div className="intro-logo-wrap"><AiModeLogo scale={1} /></div>
         <div className="intro-tagline">Activa el modo IA. Enciende tu vida</div>
@@ -534,10 +535,36 @@ function IntroScreen({ onStart }) {
           <div className="stat-item"><span className="stat-num">3'</span><span className="stat-label">Duración</span></div>
         </div>
       </div>
+
+      {/* ── LADO DERECHO — Robot imagen + circuitos ── */}
       <div className="intro-right">
-        <div className="intro-circuit-l"><CircuitPanel color="#CDF815" size={110} /></div>
-        <div className="intro-circuit-r"><CircuitPanel color="#CDF815" size={110} /></div>
-        <div className="intro-robot-wrap"><RobotIcon size={190} color="#CDF815" /></div>
+        <div className="intro-circuit-corner-l">
+          <CircuitCorner color="#CDF815" size={110} />
+        </div>
+        <div className="intro-circuit-corner-r">
+          <CircuitCorner color="#CDF815" size={110} />
+        </div>
+        <div className="intro-circuit-top">
+          <svg width="160" height="18" fill="none">
+            <line x1="0" y1="9" x2="64" y2="9" stroke="#CDF815" strokeWidth="1"/>
+            <circle cx="70" cy="9" r="5" stroke="#CDF815" strokeWidth="1" fill="none"/>
+            <line x1="76" y1="9" x2="160" y2="9" stroke="#CDF815" strokeWidth="1"/>
+          </svg>
+        </div>
+
+        {/* Robot imagen PNG */}
+        <div className="intro-robot-wrap">
+          <RobotImage size={300} />
+        </div>
+
+        <div className="intro-circuit-bottom">
+          <svg width="160" height="18" fill="none">
+            <line x1="0" y1="9" x2="64" y2="9" stroke="#CDF815" strokeWidth="1"/>
+            <circle cx="70" cy="9" r="5" stroke="#CDF815" strokeWidth="1" fill="none"/>
+            <line x1="76" y1="9" x2="160" y2="9" stroke="#CDF815" strokeWidth="1"/>
+          </svg>
+        </div>
+
         <div className="intel-pills">
           {Object.entries(INTELLIGENCES).map(([key, intel]) => (
             <span key={key} className="intel-pill" style={{ border:`1px solid ${intel.color}44`, color:intel.color, background:`${intel.color}12` }}>
@@ -569,7 +596,10 @@ function QuizScreen({ qIndex, onAnswer }) {
     <>
       <div className="side-panel">
         <div className="side-logo-wrap"><AiModeLogo scale={0.82} /></div>
-        <div className="side-robot-wrap"><RobotIcon size={120} color="#CDF815" /></div>
+        {/* Robot PNG en el side panel del quiz */}
+        <div className="side-robot-wrap">
+          <RobotImage size={140} />
+        </div>
         <div className="side-badge">Inteligencias Múltiples</div>
         <h2 className="side-title">Descubre tu<br /><span className="grad">perfil cognitivo</span></h2>
         <p className="side-sub">Responde con honestidad.<br />No hay respuestas incorrectas.</p>
@@ -626,8 +656,9 @@ function ResultScreen({ answers, onRestart }) {
     <>
       <div className="side-panel">
         <div className="side-logo-wrap"><AiModeLogo scale={0.82} /></div>
+        {/* Robot PNG en el side panel de resultados */}
         <div className="side-robot-wrap" style={{ filter:`drop-shadow(0 0 22px ${primary.glow})` }}>
-          <RobotIcon size={120} color={primary.color} />
+          <RobotImage size={140} />
         </div>
         <div className="side-badge">Tu resultado</div>
         <h2 className="side-title" style={{ color:primary.color }}>{primary.name}</h2>
@@ -705,7 +736,10 @@ function LoadingScreen({ onDone }) {
   return (
     <div className="loading-screen">
       <div className="loading-center">
-        <div className="loading-robot-wrap"><RobotIcon size={130} color="#CDF815"/></div>
+        {/* Robot PNG en la pantalla de carga */}
+        <div className="loading-robot-wrap">
+          <RobotImage size={130} />
+        </div>
         <h1 className="loading-title">Analizando</h1>
         <p className="loading-subtitle">Procesando tu perfil cognitivo...</p>
         <div className="loading-badge"><span className="loading-dot-live"/>IA Orchestrator activa</div>
