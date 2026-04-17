@@ -33,28 +33,22 @@ async function supabaseRequest(path, options = {}) {
   return JSON.parse(text);
 }
 
-// ─── GUARDAR RESULTADO: incrementa total_tests + inteligencia dominante ────────
 async function saveTestResult(primaryIntel) {
   try {
-    // 1. Incrementa el total (Asegúrate que el nombre sea 'total_tests' como en tu tabla)
     await supabaseRequest('rpc/incrementar_contador', {
       method: 'POST',
-      body: JSON.stringify({ fila_nombre: 'total_tests' }), // ← Cambiado de nombre_contador a fila_nombre
+      body: JSON.stringify({ fila_nombre: 'total_tests' }),
     });
-
-    // 2. Incrementa la inteligencia (ej: 'logica', 'musical')
     await supabaseRequest('rpc/incrementar_contador', {
       method: 'POST',
-      body: JSON.stringify({ fila_nombre: primaryIntel }), // ← Cambiado de nombre_contador a fila_nombre
+      body: JSON.stringify({ fila_nombre: primaryIntel }),
     });
-    
     console.log("✅ Datos enviados a Supabase con éxito");
   } catch (err) {
     console.error('❌ Error guardando en Supabase:', err);
   }
 }
 
-// ─── CARGAR ESTADÍSTICAS ──────────────────────────────────────────────────────
 async function loadStats() {
   try {
     const rows = await supabaseRequest('estadisticas?select=nombre,valor');
@@ -173,31 +167,119 @@ function RobotImage({ size = 260, style = {} }) {
   );
 }
 
-// ─── CIRCUIT CORNER ───────────────────────────────────────────────────────────
-function CircuitCorner({ color = "#CDF815", flip = false, size = 120 }) {
+// ─── CIRCUIT BOARD DECORATION (reemplaza CircuitCorner) ───────────────────────
+function CircuitBoard({ color = "#CDF815", flip = false, size = 140 }) {
+  const w = size;
+  const h = size * 1.55;
   const style = flip ? { transform: "scaleX(-1)" } : {};
   return (
-    <svg width={size} height={size * 1.6} viewBox="0 0 100 160" fill="none" xmlns="http://www.w3.org/2000/svg" style={style}>
-      <rect x="5" y="5" width="90" height="150" rx="5" stroke={color} strokeWidth="1" fill="none"/>
-      <rect x="12" y="12" width="30" height="22" rx="3" stroke={color} strokeWidth="0.8" fill="none"/>
-      <line x1="12" y1="20" x2="30" y2="20" stroke={color} strokeWidth="0.7"/>
-      <line x1="12" y1="26" x2="26" y2="26" stroke={color} strokeWidth="0.7"/>
-      <rect x="58" y="12" width="30" height="22" rx="3" stroke={color} strokeWidth="0.8" fill="none"/>
-      <line x1="58" y1="20" x2="76" y2="20" stroke={color} strokeWidth="0.7"/>
-      <line x1="58" y1="26" x2="72" y2="26" stroke={color} strokeWidth="0.7"/>
-      <line x1="5" y1="42" x2="0" y2="42" stroke={color} strokeWidth="0.9"/>
-      <line x1="5" y1="52" x2="0" y2="52" stroke={color} strokeWidth="0.9"/>
-      <circle cx="0" cy="42" r="2" fill={color} opacity="0.7"/>
-      <circle cx="0" cy="52" r="2" fill={color} opacity="0.7"/>
-      <circle cx="50" cy="100" r="30" stroke={color} strokeWidth="1" fill="none"/>
-      <circle cx="50" cy="100" r="18" stroke={color} strokeWidth="0.7" fill="none" strokeDasharray="3 3"/>
-      <circle cx="50" cy="100" r="7" stroke={color} strokeWidth="1" fill="none"/>
-      <circle cx="50" cy="100" r="2.5" fill={color} opacity="0.9"/>
-      <line x1="50" y1="70" x2="50" y2="78" stroke={color} strokeWidth="1"/>
-      <line x1="50" y1="122" x2="50" y2="130" stroke={color} strokeWidth="1"/>
-      <line x1="20" y1="100" x2="28" y2="100" stroke={color} strokeWidth="1"/>
-      <line x1="72" y1="100" x2="80" y2="100" stroke={color} strokeWidth="1"/>
-      <rect x="12" y="143" width="76" height="10" rx="2" stroke={color} strokeWidth="0.7" fill="none"/>
+    <svg width={w} height={h} viewBox="0 0 140 217" fill="none" xmlns="http://www.w3.org/2000/svg" style={style}>
+      {/* Borde exterior tipo PCB */}
+      <rect x="4" y="4" width="132" height="209" rx="6" stroke={color} strokeWidth="1.2" fill="none" opacity="0.6"/>
+      {/* Líneas horizontales de bus */}
+      <line x1="4" y1="28" x2="136" y2="28" stroke={color} strokeWidth="0.7" opacity="0.4"/>
+      <line x1="4" y1="189" x2="136" y2="189" stroke={color} strokeWidth="0.7" opacity="0.4"/>
+
+      {/* Componente IC superior izquierdo */}
+      <rect x="14" y="38" width="42" height="28" rx="3" stroke={color} strokeWidth="1" fill="none"/>
+      {/* Pines IC superior */}
+      <line x1="20" y1="38" x2="20" y2="32" stroke={color} strokeWidth="1" strokeLinecap="round"/>
+      <line x1="28" y1="38" x2="28" y2="32" stroke={color} strokeWidth="1" strokeLinecap="round"/>
+      <line x1="36" y1="38" x2="36" y2="32" stroke={color} strokeWidth="1" strokeLinecap="round"/>
+      <line x1="44" y1="38" x2="44" y2="32" stroke={color} strokeWidth="1" strokeLinecap="round"/>
+      {/* Pines IC inferior */}
+      <line x1="20" y1="66" x2="20" y2="72" stroke={color} strokeWidth="1" strokeLinecap="round"/>
+      <line x1="28" y1="66" x2="28" y2="72" stroke={color} strokeWidth="1" strokeLinecap="round"/>
+      <line x1="36" y1="66" x2="36" y2="72" stroke={color} strokeWidth="1" strokeLinecap="round"/>
+      <line x1="44" y1="66" x2="44" y2="72" stroke={color} strokeWidth="1" strokeLinecap="round"/>
+      {/* Muesca IC */}
+      <path d="M35 38 A0 0 0 0 1 35 38" stroke={color} strokeWidth="1"/>
+      <circle cx="35" cy="38" r="3" stroke={color} strokeWidth="0.8" fill="none"/>
+
+      {/* Componente IC superior derecho */}
+      <rect x="84" y="38" width="42" height="28" rx="3" stroke={color} strokeWidth="1" fill="none"/>
+      <line x1="90" y1="38" x2="90" y2="32" stroke={color} strokeWidth="1" strokeLinecap="round"/>
+      <line x1="98" y1="38" x2="98" y2="32" stroke={color} strokeWidth="1" strokeLinecap="round"/>
+      <line x1="106" y1="38" x2="106" y2="32" stroke={color} strokeWidth="1" strokeLinecap="round"/>
+      <line x1="114" y1="38" x2="114" y2="32" stroke={color} strokeWidth="1" strokeLinecap="round"/>
+      <line x1="90" y1="66" x2="90" y2="72" stroke={color} strokeWidth="1" strokeLinecap="round"/>
+      <line x1="98" y1="66" x2="98" y2="72" stroke={color} strokeWidth="1" strokeLinecap="round"/>
+      <line x1="106" y1="66" x2="106" y2="72" stroke={color} strokeWidth="1" strokeLinecap="round"/>
+      <line x1="114" y1="66" x2="114" y2="72" stroke={color} strokeWidth="1" strokeLinecap="round"/>
+      <circle cx="105" cy="38" r="3" stroke={color} strokeWidth="0.8" fill="none"/>
+
+      {/* Trazas de circuito horizontales */}
+      <line x1="56" y1="52" x2="84" y2="52" stroke={color} strokeWidth="1.2" strokeLinecap="round"/>
+      <line x1="14" y1="80" x2="60" y2="80" stroke={color} strokeWidth="1" strokeLinecap="round"/>
+      <line x1="80" y1="80" x2="126" y2="80" stroke={color} strokeWidth="1" strokeLinecap="round"/>
+
+      {/* Trazas verticales con esquinas 90° */}
+      <path d="M60 80 L60 92 L70 92 L70 108" stroke={color} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+      <path d="M80 80 L80 92 L70 92" stroke={color} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+
+      {/* Chip central grande */}
+      <rect x="42" y="108" width="56" height="40" rx="4" stroke={color} strokeWidth="1.3" fill="none"/>
+      {/* Pines laterales izquierda */}
+      <line x1="42" y1="116" x2="34" y2="116" stroke={color} strokeWidth="1.1" strokeLinecap="round"/>
+      <line x1="42" y1="124" x2="34" y2="124" stroke={color} strokeWidth="1.1" strokeLinecap="round"/>
+      <line x1="42" y1="132" x2="34" y2="132" stroke={color} strokeWidth="1.1" strokeLinecap="round"/>
+      <line x1="42" y1="140" x2="34" y2="140" stroke={color} strokeWidth="1.1" strokeLinecap="round"/>
+      {/* Pines laterales derecha */}
+      <line x1="98" y1="116" x2="106" y2="116" stroke={color} strokeWidth="1.1" strokeLinecap="round"/>
+      <line x1="98" y1="124" x2="106" y2="124" stroke={color} strokeWidth="1.1" strokeLinecap="round"/>
+      <line x1="98" y1="132" x2="106" y2="132" stroke={color} strokeWidth="1.1" strokeLinecap="round"/>
+      <line x1="98" y1="140" x2="106" y2="140" stroke={color} strokeWidth="1.1" strokeLinecap="round"/>
+      {/* Texto chip */}
+      <text x="70" y="131" textAnchor="middle" fill={color} fontSize="6" fontFamily="monospace" opacity="0.8">AI</text>
+      <text x="70" y="140" textAnchor="middle" fill={color} fontSize="5" fontFamily="monospace" opacity="0.6">CPU</text>
+      {/* Punto de pin 1 */}
+      <circle cx="46" cy="112" r="1.5" fill={color} opacity="0.7"/>
+
+      {/* Resistencias / capacitores pequeños */}
+      <rect x="20" y="88" width="14" height="6" rx="1.5" stroke={color} strokeWidth="0.8" fill="none"/>
+      <line x1="14" y1="91" x2="20" y2="91" stroke={color} strokeWidth="0.8" strokeLinecap="round"/>
+      <line x1="34" y1="91" x2="40" y2="91" stroke={color} strokeWidth="0.8" strokeLinecap="round"/>
+
+      <rect x="100" y="88" width="14" height="6" rx="1.5" stroke={color} strokeWidth="0.8" fill="none"/>
+      <line x1="94" y1="91" x2="100" y2="91" stroke={color} strokeWidth="0.8" strokeLinecap="round"/>
+      <line x1="114" y1="91" x2="120" y2="91" stroke={color} strokeWidth="0.8" strokeLinecap="round"/>
+
+      {/* Círculos de via/pad */}
+      <circle cx="14" cy="52" r="3.5" stroke={color} strokeWidth="0.9" fill="none"/>
+      <circle cx="14" cy="52" r="1.2" fill={color} opacity="0.6"/>
+      <circle cx="126" cy="52" r="3.5" stroke={color} strokeWidth="0.9" fill="none"/>
+      <circle cx="126" cy="52" r="1.2" fill={color} opacity="0.6"/>
+      <circle cx="14" cy="80" r="3" stroke={color} strokeWidth="0.8" fill="none"/>
+      <circle cx="126" cy="80" r="3" stroke={color} strokeWidth="0.8" fill="none"/>
+
+      {/* Trazas inferiores */}
+      <path d="M34 140 L20 140 L20 160" stroke={color} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+      <path d="M106 140 L120 140 L120 160" stroke={color} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+      <line x1="20" y1="160" x2="120" y2="160" stroke={color} strokeWidth="1" strokeLinecap="round"/>
+      <path d="M60 160 L60 172 L80 172 L80 160" stroke={color} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+
+      {/* Conector inferior tipo barra */}
+      <rect x="16" y="193" width="108" height="14" rx="2.5" stroke={color} strokeWidth="0.9" fill="none"/>
+      <line x1="24" y1="193" x2="24" y2="207" stroke={color} strokeWidth="0.6" opacity="0.5"/>
+      <line x1="32" y1="193" x2="32" y2="207" stroke={color} strokeWidth="0.6" opacity="0.5"/>
+      <line x1="40" y1="193" x2="40" y2="207" stroke={color} strokeWidth="0.6" opacity="0.5"/>
+      <line x1="48" y1="193" x2="48" y2="207" stroke={color} strokeWidth="0.6" opacity="0.5"/>
+      <line x1="56" y1="193" x2="56" y2="207" stroke={color} strokeWidth="0.6" opacity="0.5"/>
+      <line x1="64" y1="193" x2="64" y2="207" stroke={color} strokeWidth="0.6" opacity="0.5"/>
+      <line x1="72" y1="193" x2="72" y2="207" stroke={color} strokeWidth="0.6" opacity="0.5"/>
+      <line x1="80" y1="193" x2="80" y2="207" stroke={color} strokeWidth="0.6" opacity="0.5"/>
+      <line x1="88" y1="193" x2="88" y2="207" stroke={color} strokeWidth="0.6" opacity="0.5"/>
+      <line x1="96" y1="193" x2="96" y2="207" stroke={color} strokeWidth="0.6" opacity="0.5"/>
+      <line x1="104" y1="193" x2="104" y2="207" stroke={color} strokeWidth="0.6" opacity="0.5"/>
+      <line x1="112" y1="193" x2="112" y2="207" stroke={color} strokeWidth="0.6" opacity="0.5"/>
+
+      {/* Pines externos izquierda (edge connectors) */}
+      <line x1="0" y1="116" x2="4" y2="116" stroke={color} strokeWidth="1.2" strokeLinecap="round"/>
+      <line x1="0" y1="128" x2="4" y2="128" stroke={color} strokeWidth="1.2" strokeLinecap="round"/>
+      <line x1="0" y1="140" x2="4" y2="140" stroke={color} strokeWidth="1.2" strokeLinecap="round"/>
+      <circle cx="0" cy="116" r="2" fill={color} opacity="0.7"/>
+      <circle cx="0" cy="128" r="2" fill={color} opacity="0.7"/>
+      <circle cx="0" cy="140" r="2" fill={color} opacity="0.7"/>
     </svg>
   );
 }
@@ -455,15 +537,15 @@ const css = `
   /* SIDE */
   .side-panel{
     width:38%;min-height:100vh;display:flex;flex-direction:column;
-    justify-content:center;align-items:center;
-    padding:3rem 2rem;position:sticky;top:0;
+    justify-content:flex-start;align-items:center;
+    padding:2.5rem 2rem 2rem;position:sticky;top:0;
     border-right:1px solid rgba(205,248,21,0.14);
     background:rgba(0,0,0,0.18);backdrop-filter:blur(6px);
   }
-  .side-logo-wrap{margin-bottom:1.75rem;}
+  .side-logo-wrap{margin-bottom:1.5rem;align-self:flex-start;}
   .side-robot-wrap{
     width:140px;height:175px;display:flex;align-items:center;justify-content:center;
-    margin-bottom:1.75rem;
+    margin-bottom:1.5rem;
     animation:floatRobot 4s ease-in-out infinite;
     filter:drop-shadow(0 0 18px rgba(205,248,21,0.5));
   }
@@ -484,9 +566,11 @@ const css = `
 
   /* INTRO — full two-column layout */
   .intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;width:100%;min-height:100vh;align-items:stretch;}
-  .intro-left{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:4rem 4rem 4rem 5rem;border-right:1px solid rgba(205,248,21,0.1);position:relative;overflow:hidden;}
+  /* CAMBIO: intro-left ahora usa justify-content flex-start para subir el logo */
+  .intro-left{display:flex;flex-direction:column;justify-content:flex-start;align-items:flex-start;padding:3rem 4rem 4rem 5rem;border-right:1px solid rgba(205,248,21,0.1);position:relative;overflow:hidden;}
   .intro-right{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:3rem 2rem;background:rgba(0,0,0,0.12);position:relative;overflow:hidden;}
-  .intro-logo-wrap{margin-bottom:1.75rem;}
+  /* CAMBIO: el logo en intro ahora tiene más espacio arriba para aparecer más arriba */
+  .intro-logo-wrap{margin-bottom:1.5rem;margin-top:0.5rem;}
   .intro-tagline{font-size:10px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:rgba(205,248,21,0.65);margin-bottom:1.25rem;}
   .intro-badge{display:inline-flex;align-items:center;gap:7px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#CDF815;border:1px solid rgba(205,248,21,0.28);background:rgba(205,248,21,0.07);padding:7px 16px;border-radius:50px;margin-bottom:1.5rem;}
   .intro-badge::before{content:'';width:5px;height:5px;background:#CDF815;border-radius:50%;box-shadow:0 0 8px #CDF815;animation:blink 2s ease-in-out infinite;}
@@ -508,7 +592,7 @@ const css = `
   .stat-num{font-family:'Poppins',sans-serif;font-size:28px;font-weight:900;color:#CDF815;display:block;line-height:1;margin-bottom:4px;text-shadow:0 0 14px rgba(205,248,21,0.5);}
   .stat-label{font-size:8px;color:rgba(255,255,255,0.38);letter-spacing:2px;text-transform:uppercase;font-weight:600;}
 
-  /* LIVE COUNTER BLOCK — pantalla principal derecha */
+  /* LIVE COUNTER BLOCK */
   .intro-live-counter{
     width:100%;max-width:320px;
     background:rgba(0,0,0,0.28);
@@ -674,50 +758,44 @@ const css = `
 function BgDeco() {
   return (
     <div className="circuit-deco">
-      <div style={{ position:"absolute", left:-18, top:"8%", opacity:0.08 }}>
-        <CircuitCorner color="#CDF815" size={140} />
+      <div style={{ position:"absolute", left:-18, top:"8%", opacity:0.09 }}>
+        <CircuitBoard color="#CDF815" size={130} />
       </div>
-      <div style={{ position:"absolute", right:-18, top:"8%", opacity:0.08 }}>
-        <CircuitCorner color="#CDF815" size={140} flip={true} />
+      <div style={{ position:"absolute", right:-18, top:"8%", opacity:0.09 }}>
+        <CircuitBoard color="#CDF815" size={130} flip={true} />
       </div>
-      <div style={{ position:"absolute", left:-18, bottom:"4%", opacity:0.05 }}>
-        <CircuitCorner color="#CDF815" size={100} />
+      <div style={{ position:"absolute", left:-18, bottom:"4%", opacity:0.06 }}>
+        <CircuitBoard color="#CDF815" size={95} />
       </div>
-      <div style={{ position:"absolute", right:-18, bottom:"4%", opacity:0.05 }}>
-        <CircuitCorner color="#CDF815" size={100} flip={true} />
+      <div style={{ position:"absolute", right:-18, bottom:"4%", opacity:0.06 }}>
+        <CircuitBoard color="#CDF815" size={95} flip={true} />
       </div>
     </div>
   );
 }
 
-// ─── INTRO LIVE COUNTER — bloque que aparece en pantalla principal ─────────────
+// ─── INTRO LIVE COUNTER ───────────────────────────────────────────────────────
 function IntroLiveCounter() {
   const [stats, setStats] = useState(null);
   const [barsReady, setBarsReady] = useState(false);
 
   useEffect(() => {
-  // 1. Revisar si venimos de un QR con resultados
-  const params = new URLSearchParams(window.location.search);
-  const qIntel = params.get('intel');
-  const qThinking = params.get('thinking');
+    const params = new URLSearchParams(window.location.search);
+    const qIntel = params.get('intel');
+    const qThinking = params.get('thinking');
 
-  if (qIntel && qThinking) {
-    // Si existen estos datos, saltamos directamente al resultado
-    setPrimaryIntel(qIntel);
-    setPrimaryThinking(qThinking);
-    setStep('results'); // <--- ASEGÚRATE que 'results' sea el nombre de tu pantalla final
-    setBarsReady(false);
-    setTimeout(() => setBarsReady(true), 600);
-  }
-
-  // 2. Cargar las estadísticas globales de Supabase como ya hacías
-  loadStats().then(s => {
-    if (s) setStats(s);
-    if (!qIntel) { // Solo animamos barras si no saltamos por QR
-       setTimeout(() => setBarsReady(true), 400);
+    if (qIntel && qThinking) {
+      setBarsReady(false);
+      setTimeout(() => setBarsReady(true), 600);
     }
-  });
-}, []);
+
+    loadStats().then(s => {
+      if (s) setStats(s);
+      if (!qIntel) {
+        setTimeout(() => setBarsReady(true), 400);
+      }
+    });
+  }, []);
 
   const intelOrder = ['logica','linguistica','visual','musical','kinestesica','interpersonal','intrapersonal','naturalista'];
 
@@ -743,14 +821,10 @@ function IntroLiveCounter() {
         <span className="ilc-label">Estadísticas globales</span>
         <span className="ilc-live"><span className="ilc-dot"/>En vivo · Supabase</span>
       </div>
-
-      {/* Total grande */}
       <div className="ilc-total-row">
         <span className="ilc-total-num">{stats.total}</span>
         <span className="ilc-total-text">personas han<br/>completado el test</span>
       </div>
-
-      {/* Mini barras por inteligencia */}
       <div className="ilc-bars">
         {intelOrder.map(key => {
           const intel = INTELLIGENCES[key];
@@ -778,7 +852,7 @@ function IntroLiveCounter() {
   );
 }
 
-// ─── STATS PANEL (en resultado) ───────────────────────────────────────────────
+// ─── STATS PANEL ─────────────────────────────────────────────────────────────
 function StatsPanel({ highlightThinking, highlightIntel }) {
   const [stats, setStats] = useState(null);
   const [barsReady, setBarsReady] = useState(false);
@@ -802,7 +876,6 @@ function StatsPanel({ highlightThinking, highlightIntel }) {
   return (
     <div className="glass-card">
       <div className="card-label">Estadísticas globales · Todos los tests realizados</div>
-
       <div className="stats-panel-total">
         <div className="stats-total-num">{stats.total}</div>
         <div>
@@ -810,7 +883,6 @@ function StatsPanel({ highlightThinking, highlightIntel }) {
           <div className="stats-total-live"><span className="stats-total-dot"/>Datos en tiempo real · Supabase</div>
         </div>
       </div>
-
       <div className="card-label" style={{ marginTop: '1rem', marginBottom: '0.7rem' }}>
         Distribución global por inteligencia
       </div>
@@ -897,8 +969,9 @@ function MesasMatrix({ primaryIntel, primaryThinking }) {
 function IntroScreen({ onStart }) {
   return (
     <div className="intro-grid screen-enter">
-      {/* LEFT: título, botón, stats fijos */}
+      {/* LEFT: título, botón, stats — contenido arriba */}
       <div className="intro-left">
+        {/* CAMBIO: logo arriba con margin-top pequeño */}
         <div className="intro-logo-wrap"><AiModeLogo scale={1} /></div>
         <div className="intro-tagline">Activa el modo IA. Enciende tu vida</div>
         <div className="intro-badge">Test de Inteligencias Múltiples</div>
@@ -916,10 +989,10 @@ function IntroScreen({ onStart }) {
         </div>
       </div>
 
-      {/* RIGHT: robot + pills + CONTADORES EN VIVO */}
+      {/* RIGHT: robot + pills + contadores */}
       <div className="intro-right">
-        <div className="intro-circuit-corner-l"><CircuitCorner color="#CDF815" size={110} /></div>
-        <div className="intro-circuit-corner-r"><CircuitCorner color="#CDF815" size={110} /></div>
+        <div className="intro-circuit-corner-l"><CircuitBoard color="#CDF815" size={110} /></div>
+        <div className="intro-circuit-corner-r"><CircuitBoard color="#CDF815" size={110} flip={true} /></div>
         <div className="intro-circuit-top">
           <svg width="160" height="18" fill="none">
             <line x1="0" y1="9" x2="64" y2="9" stroke="#CDF815" strokeWidth="1"/>
@@ -944,8 +1017,6 @@ function IntroScreen({ onStart }) {
             </span>
           ))}
         </div>
-
-        {/* ★ CONTADORES EN VIVO — aparecen aquí en la pantalla principal */}
         <IntroLiveCounter />
       </div>
     </div>
@@ -977,6 +1048,7 @@ function QuizScreen({ qIndex, onAnswer }) {
 
   return (
     <>
+      {/* CAMBIO: side-panel ahora align-items flex-start, contenido arriba */}
       <div className="side-panel">
         <div className="side-logo-wrap"><AiModeLogo scale={0.82} /></div>
         <div className="side-robot-wrap"><RobotImage size={140} /></div>
@@ -1044,6 +1116,7 @@ function ResultScreen({ answers, onRestart }) {
 
   return (
     <>
+      {/* CAMBIO: side-panel en resultado también arriba (justify-content: flex-start en CSS) */}
       <div className="side-panel">
         <div className="side-logo-wrap"><AiModeLogo scale={0.82} /></div>
         <div className="side-robot-wrap" style={{ filter:`drop-shadow(0 0 22px ${primary.glow})` }}>
@@ -1146,8 +1219,6 @@ function ResultScreen({ answers, onRestart }) {
               </div>
             </div>
 
-
-
             <DownloadSection 
               primary={primary} 
               thinking={thinking} 
@@ -1156,7 +1227,6 @@ function ResultScreen({ answers, onRestart }) {
               primaryIntel={primaryIntel}       
               primaryThinking={primaryThinking}
             />
-
 
             <div style={{ textAlign:"center" }}>
               <button className="restart-btn" onClick={onRestart} style={{ margin:"0 auto" }}>↺ Repetir el test</button>
