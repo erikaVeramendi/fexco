@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import DownloadSection from './DownloadSection';
 
 // ─── PALETA OFICIAL ───────────────────────────────────────────────────────────
 const C = {
@@ -8,28 +9,73 @@ const C = {
   white: "#FFFFFF",
 };
 
-// ─── STORAGE HELPERS (contadores globales) ────────────────────────────────────
-async function saveTestResult(primaryThinking) {
+// ─── CONFIGURACIÓN SUPABASE ───────────────────────────────────────────────────
+const SUPABASE_URL = 'https://ziosmbtgmxuvycnuewoj.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_n__VY44aJXPKRtcrl5GMpA_eYnd02C5';
+
+async function supabaseRequest(path, options = {}) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    headers: {
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation',
+      ...options.headers,
+    },
+    ...options,
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Supabase error: ${err}`);
+  }
+  const text = await res.text();
+  if (!text) return null;
+  return JSON.parse(text);
+}
+
+// ─── GUARDAR RESULTADO: incrementa total_tests + inteligencia dominante ────────
+async function saveTestResult(primaryIntel) {
   try {
-    let stats = { total: 0, A: 0, B: 0, C: 0, D: 0 };
-    try {
-      const res = await window.storage.get("stats:global", true);
-      if (res) stats = JSON.parse(res.value);
-    } catch (_) {}
-    stats.total = (stats.total || 0) + 1;
-    stats[primaryThinking] = (stats[primaryThinking] || 0) + 1;
-    await window.storage.set("stats:global", JSON.stringify(stats), true);
+    // 1. Incrementa el total (Asegúrate que el nombre sea 'total_tests' como en tu tabla)
+    await supabaseRequest('rpc/incrementar_contador', {
+      method: 'POST',
+      body: JSON.stringify({ fila_nombre: 'total_tests' }), // ← Cambiado de nombre_contador a fila_nombre
+    });
+
+    // 2. Incrementa la inteligencia (ej: 'logica', 'musical')
+    await supabaseRequest('rpc/incrementar_contador', {
+      method: 'POST',
+      body: JSON.stringify({ fila_nombre: primaryIntel }), // ← Cambiado de nombre_contador a fila_nombre
+    });
+    
+    console.log("✅ Datos enviados a Supabase con éxito");
   } catch (err) {
-    console.error("Error guardando stats:", err);
+    console.error('❌ Error guardando en Supabase:', err);
   }
 }
 
+// ─── CARGAR ESTADÍSTICAS ──────────────────────────────────────────────────────
 async function loadStats() {
   try {
-    const res = await window.storage.get("stats:global", true);
-    if (res) return JSON.parse(res.value);
-  } catch (_) {}
-  return { total: 0, A: 0, B: 0, C: 0, D: 0 };
+    const rows = await supabaseRequest('estadisticas?select=nombre,valor');
+    const stats = {
+      total: 0, logica: 0, linguistica: 0, visual: 0,
+      musical: 0, kinestesica: 0, interpersonal: 0, intrapersonal: 0, naturalista: 0
+    };
+    if (rows && Array.isArray(rows)) {
+      rows.forEach(row => {
+        if (row.nombre === 'total_tests') stats.total = row.valor;
+        else if (stats.hasOwnProperty(row.nombre)) stats[row.nombre] = row.valor;
+      });
+    }
+    return stats;
+  } catch (err) {
+    console.error('Error cargando stats:', err);
+    return {
+      total: 0, logica: 0, linguistica: 0, visual: 0,
+      musical: 0, kinestesica: 0, interpersonal: 0, intrapersonal: 0, naturalista: 0
+    };
+  }
 }
 
 // ─── ICONS ────────────────────────────────────────────────────────────────────
@@ -231,7 +277,7 @@ const THINKING_TYPES = {
   },
 };
 
-// ─── MATRIX: Tools per intelligence × thinking type ───────────────────────────
+// ─── MATRIX ───────────────────────────────────────────────────────────────────
 const MATRIX = {
   logica: {
     A: { herramienta: "Claude", desc: "Razonamiento lógico y cálculo predictivo" },
@@ -283,7 +329,7 @@ const MATRIX = {
   },
 };
 
-// ─── PROFILES per intelligence ────────────────────────────────────────────────
+// ─── PROFILES ────────────────────────────────────────────────────────────────
 const PROFILES = {
   logica:        { desc: "Tu mente funciona como un procesador: detectas patrones, razonas con precisión y disfrutas de los desafíos lógicos y matemáticos.", ai: "Claude 3.5 / Wolfram Alpha", aiDesc: "Potencia tus cálculos, análisis y lógica con modelos avanzados." },
   linguistica:   { desc: "Las palabras son tu superpoder. Comunicas ideas con claridad, disfrutas de la lectura, escritura y el debate.", ai: "Claude / GPT-4 Turbo", aiDesc: "Genera contenido, escribe historias y comunica con precisión." },
@@ -295,7 +341,7 @@ const PROFILES = {
   naturalista:   { desc: "Observas patrones en la naturaleza. Comprendes sistemas complejos y clasificas información ambiental con facilidad.", ai: "iNaturalist / PlantNet", aiDesc: "Analiza datos ambientales y patrones naturales con IA." },
 };
 
-// ─── 6 PREGUNTAS ─────────────────────────────────────────────────────────────
+// ─── QUESTIONS ───────────────────────────────────────────────────────────────
 const QUESTIONS = [
   {
     num: "01",
@@ -436,7 +482,7 @@ const css = `
   .main-panel{flex:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:3rem 4rem;overflow-y:auto;}
   .main-inner{width:100%;max-width:620px;}
 
-  /* INTRO */
+  /* INTRO — full two-column layout */
   .intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;width:100%;min-height:100vh;align-items:stretch;}
   .intro-left{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:4rem 4rem 4rem 5rem;border-right:1px solid rgba(205,248,21,0.1);position:relative;overflow:hidden;}
   .intro-right{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:3rem 2rem;background:rgba(0,0,0,0.12);position:relative;overflow:hidden;}
@@ -455,10 +501,39 @@ const css = `
   .intro-circuit-corner-r{position:absolute;right:-8px;top:50%;transform:translateY(-50%) scaleX(-1);opacity:0.32;pointer-events:none;z-index:1;}
   .intro-circuit-top{position:absolute;top:14px;left:50%;transform:translateX(-50%);opacity:0.3;pointer-events:none;z-index:1;}
   .intro-circuit-bottom{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);opacity:0.3;pointer-events:none;z-index:1;}
+
+  /* STATS ROW — intro screen */
   .stats-row{display:flex;gap:2.25rem;margin-top:1.75rem;}
   .stat-item{text-align:center;}
   .stat-num{font-family:'Poppins',sans-serif;font-size:28px;font-weight:900;color:#CDF815;display:block;line-height:1;margin-bottom:4px;text-shadow:0 0 14px rgba(205,248,21,0.5);}
   .stat-label{font-size:8px;color:rgba(255,255,255,0.38);letter-spacing:2px;text-transform:uppercase;font-weight:600;}
+
+  /* LIVE COUNTER BLOCK — pantalla principal derecha */
+  .intro-live-counter{
+    width:100%;max-width:320px;
+    background:rgba(0,0,0,0.28);
+    border:1px solid rgba(205,248,21,0.18);
+    border-radius:14px;
+    padding:1.1rem 1.25rem;
+    margin-top:1.25rem;
+    position:relative;overflow:hidden;
+    backdrop-filter:blur(12px);
+  }
+  .intro-live-counter::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,#CDF815,transparent);}
+  .ilc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.85rem;}
+  .ilc-label{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(205,248,21,0.55);}
+  .ilc-live{display:inline-flex;align-items:center;gap:5px;font-size:7px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#CDF815;}
+  .ilc-dot{width:5px;height:5px;border-radius:50%;background:#CDF815;box-shadow:0 0 6px #CDF815;animation:blink 2s ease-in-out infinite;flex-shrink:0;}
+  .ilc-total-row{display:flex;align-items:baseline;gap:8px;margin-bottom:0.9rem;}
+  .ilc-total-num{font-family:'Poppins',sans-serif;font-size:36px;font-weight:900;color:#CDF815;line-height:1;text-shadow:0 0 18px rgba(205,248,21,0.5);}
+  .ilc-total-text{font-size:11px;color:rgba(255,255,255,0.45);line-height:1.5;}
+  .ilc-bars{display:flex;flex-direction:column;gap:5px;}
+  .ilc-bar-row{display:flex;align-items:center;gap:7px;}
+  .ilc-bar-icon{flex-shrink:0;}
+  .ilc-bar-name{font-size:9px;font-weight:600;width:90px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ilc-bar-track{flex:1;height:4px;border-radius:4px;overflow:hidden;}
+  .ilc-bar-fill{height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(0.4,0,0.2,1);}
+  .ilc-bar-num{font-size:9px;font-weight:800;width:22px;text-align:right;flex-shrink:0;}
 
   /* TRANSITIONS */
   .screen-enter{animation:screenIn 0.5s cubic-bezier(0.16,1,0.3,1) forwards;}
@@ -518,13 +593,7 @@ const css = `
   .bar-num{font-size:11px;width:16px;text-align:right;flex-shrink:0;font-weight:800;}
 
   /* STATS PANEL */
-  .stats-panel-total{
-    display:flex;align-items:center;gap:14px;
-    margin-bottom:1.1rem;padding:14px 18px;
-    background:rgba(205,248,21,0.06);
-    border:1px solid rgba(205,248,21,0.2);
-    border-radius:11px;
-  }
+  .stats-panel-total{display:flex;align-items:center;gap:14px;margin-bottom:1.1rem;padding:14px 18px;background:rgba(205,248,21,0.06);border:1px solid rgba(205,248,21,0.2);border-radius:11px;}
   .stats-total-num{font-family:'Poppins',sans-serif;font-size:36px;font-weight:900;color:#CDF815;line-height:1;text-shadow:0 0 18px rgba(205,248,21,0.45);}
   .stats-total-label{font-size:12px;color:rgba(255,255,255,0.5);line-height:1.6;}
   .stats-total-live{display:inline-flex;align-items:center;gap:5px;font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#CDF815;margin-top:4px;}
@@ -537,7 +606,7 @@ const css = `
   .thinking-stat-fill{height:100%;border-radius:5px;transition:width 1.2s cubic-bezier(0.4,0,0.2,1);}
   .thinking-stat-nums{font-size:11px;width:60px;text-align:right;flex-shrink:0;font-weight:800;opacity:0.9;}
 
-  /* MESAS / MATRIX */
+  /* MESAS */
   .mesas-section{margin-bottom:1.1rem;}
   .matrix-intro{font-size:12px;color:rgba(255,255,255,0.5);line-height:1.7;margin-bottom:1rem;}
   .mesas-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
@@ -586,6 +655,7 @@ const css = `
     .intro-right{padding:2.25rem 2rem;}
     .side-panel{display:none;}
     .main-panel{padding:2rem 1.5rem;padding-bottom:4rem;}
+    .intro-live-counter{max-width:100%;}
   }
   @media (max-width:640px){
     .intro-left{padding:2.25rem 1.25rem 1.5rem;}
@@ -620,8 +690,96 @@ function BgDeco() {
   );
 }
 
-// ─── STATS PANEL (contadores globales) ───────────────────────────────────────
-function StatsPanel({ highlightThinking }) {
+// ─── INTRO LIVE COUNTER — bloque que aparece en pantalla principal ─────────────
+function IntroLiveCounter() {
+  const [stats, setStats] = useState(null);
+  const [barsReady, setBarsReady] = useState(false);
+
+  useEffect(() => {
+  // 1. Revisar si venimos de un QR con resultados
+  const params = new URLSearchParams(window.location.search);
+  const qIntel = params.get('intel');
+  const qThinking = params.get('thinking');
+
+  if (qIntel && qThinking) {
+    // Si existen estos datos, saltamos directamente al resultado
+    setPrimaryIntel(qIntel);
+    setPrimaryThinking(qThinking);
+    setStep('results'); // <--- ASEGÚRATE que 'results' sea el nombre de tu pantalla final
+    setBarsReady(false);
+    setTimeout(() => setBarsReady(true), 600);
+  }
+
+  // 2. Cargar las estadísticas globales de Supabase como ya hacías
+  loadStats().then(s => {
+    if (s) setStats(s);
+    if (!qIntel) { // Solo animamos barras si no saltamos por QR
+       setTimeout(() => setBarsReady(true), 400);
+    }
+  });
+}, []);
+
+  const intelOrder = ['logica','linguistica','visual','musical','kinestesica','interpersonal','intrapersonal','naturalista'];
+
+  if (!stats) {
+    return (
+      <div className="intro-live-counter">
+        <div className="ilc-header">
+          <span className="ilc-label">Estadísticas globales</span>
+          <span className="ilc-live"><span className="ilc-dot"/>En vivo</span>
+        </div>
+        <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', textAlign: 'center', padding: '0.5rem 0' }}>
+          Cargando datos...
+        </div>
+      </div>
+    );
+  }
+
+  const maxVal = Math.max(...intelOrder.map(k => stats[k] || 0), 1);
+
+  return (
+    <div className="intro-live-counter">
+      <div className="ilc-header">
+        <span className="ilc-label">Estadísticas globales</span>
+        <span className="ilc-live"><span className="ilc-dot"/>En vivo · Supabase</span>
+      </div>
+
+      {/* Total grande */}
+      <div className="ilc-total-row">
+        <span className="ilc-total-num">{stats.total}</span>
+        <span className="ilc-total-text">personas han<br/>completado el test</span>
+      </div>
+
+      {/* Mini barras por inteligencia */}
+      <div className="ilc-bars">
+        {intelOrder.map(key => {
+          const intel = INTELLIGENCES[key];
+          const val = stats[key] || 0;
+          const barW = barsReady && maxVal > 0 ? `${(val / maxVal) * 100}%` : '0%';
+          return (
+            <div key={key} className="ilc-bar-row">
+              <div className="ilc-bar-icon">
+                <IntelIcon iconKey={intel.iconKey} size={11} color={intel.color}/>
+              </div>
+              <span className="ilc-bar-name" style={{ color: intel.color }}>{intel.name}</span>
+              <div className="ilc-bar-track" style={{ background: `${intel.color}16` }}>
+                <div className="ilc-bar-fill" style={{
+                  width: barW,
+                  background: `linear-gradient(90deg,${intel.color}70,${intel.color})`,
+                  boxShadow: `0 0 5px ${intel.glow}`,
+                }}/>
+              </div>
+              <span className="ilc-bar-num" style={{ color: intel.color }}>{val}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ─── STATS PANEL (en resultado) ───────────────────────────────────────────────
+function StatsPanel({ highlightThinking, highlightIntel }) {
   const [stats, setStats] = useState(null);
   const [barsReady, setBarsReady] = useState(false);
 
@@ -632,69 +790,58 @@ function StatsPanel({ highlightThinking }) {
     });
   }, []);
 
-  if (!stats) return null;
+  if (!stats) return (
+    <div className="glass-card" style={{ textAlign: 'center', padding: '2rem', color: 'rgba(255,255,255,0.3)', fontSize: 12 }}>
+      Cargando estadísticas globales...
+    </div>
+  );
 
-  const thinkingOrder = ["A", "B", "C", "D"];
-  const maxVal = Math.max(...thinkingOrder.map(k => stats[k] || 0), 1);
+  const intelOrder = ['logica','linguistica','visual','musical','kinestesica','interpersonal','intrapersonal','naturalista'];
+  const maxIntel = Math.max(...intelOrder.map(k => stats[k] || 0), 1);
 
   return (
     <div className="glass-card">
       <div className="card-label">Estadísticas globales · Todos los tests realizados</div>
 
-      {/* Total counter */}
       <div className="stats-panel-total">
         <div className="stats-total-num">{stats.total}</div>
         <div>
-          <div className="stats-total-label">
-            personas han completado<br />este test
-          </div>
-          <div className="stats-total-live">
-            <span className="stats-total-dot" />
-            Datos en tiempo real
-          </div>
+          <div className="stats-total-label">personas han completado<br/>este test</div>
+          <div className="stats-total-live"><span className="stats-total-dot"/>Datos en tiempo real · Supabase</div>
         </div>
       </div>
 
-      {/* Bars por tipo de pensamiento */}
+      <div className="card-label" style={{ marginTop: '1rem', marginBottom: '0.7rem' }}>
+        Distribución global por inteligencia
+      </div>
       <div className="thinking-stats-bars">
-        {thinkingOrder.map(tKey => {
-          const t = THINKING_TYPES[tKey];
-          const val = stats[tKey] || 0;
+        {intelOrder.map(key => {
+          const intel = INTELLIGENCES[key];
+          const val = stats[key] || 0;
           const pct = stats.total > 0 ? Math.round((val / stats.total) * 100) : 0;
-          const barW = barsReady ? `${(val / maxVal) * 100}%` : "0%";
-          const isHighlight = tKey === highlightThinking;
+          const barW = barsReady ? `${(val / maxIntel) * 100}%` : '0%';
+          const isHighlight = key === highlightIntel;
           return (
-            <div
-              key={tKey}
-              className="thinking-stat-row"
-              style={{
-                background: isHighlight ? t.bg : "rgba(255,255,255,0.03)",
-                borderColor: isHighlight ? t.border : "rgba(255,255,255,0.06)",
-                boxShadow: isHighlight ? `0 2px 16px ${t.glow}` : "none",
-              }}
-            >
-              <div className="thinking-stat-label" style={{ color: t.color }}>
-                {t.label} · {t.name}
-                {isHighlight && (
-                  <span style={{
-                    display: "block", fontSize: 8, opacity: 0.7,
-                    marginTop: 2, fontWeight: 700, letterSpacing: "1px"
-                  }}>
-                    ★ TU RESULTADO
-                  </span>
-                )}
+            <div key={key} className="thinking-stat-row" style={{
+              background: isHighlight ? `${intel.color}15` : 'rgba(255,255,255,0.03)',
+              borderColor: isHighlight ? `${intel.color}40` : 'rgba(255,255,255,0.06)',
+              boxShadow: isHighlight ? `0 2px 16px ${intel.glow}` : 'none',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, width: 150, flexShrink: 0 }}>
+                <IntelIcon iconKey={intel.iconKey} size={13} color={intel.color}/>
+                <span className="thinking-stat-label" style={{ color: intel.color, width: 'auto' }}>
+                  {intel.name}
+                  {isHighlight && <span style={{ display: 'block', fontSize: 7, opacity: 0.7, marginTop: 1, fontWeight: 700, letterSpacing: '1px' }}>★ TU RESULTADO</span>}
+                </span>
               </div>
-              <div className="thinking-stat-track" style={{ background: `${t.color}16` }}>
-                <div
-                  className="thinking-stat-fill"
-                  style={{
-                    width: barW,
-                    background: `linear-gradient(90deg,${t.color}70,${t.color})`,
-                    boxShadow: isHighlight ? `0 0 8px ${t.glow}` : "none",
-                  }}
-                />
+              <div className="thinking-stat-track" style={{ background: `${intel.color}16` }}>
+                <div className="thinking-stat-fill" style={{
+                  width: barW,
+                  background: `linear-gradient(90deg,${intel.color}70,${intel.color})`,
+                  boxShadow: isHighlight ? `0 0 8px ${intel.glow}` : 'none',
+                }}/>
               </div>
-              <div className="thinking-stat-nums" style={{ color: t.color }}>
+              <div className="thinking-stat-nums" style={{ color: intel.color }}>
                 {val} <span style={{ fontSize: 9, opacity: 0.6 }}>({pct}%)</span>
               </div>
             </div>
@@ -705,7 +852,7 @@ function StatsPanel({ highlightThinking }) {
   );
 }
 
-// ─── MATRIX MESAS COMPONENT ───────────────────────────────────────────────────
+// ─── MATRIX MESAS ─────────────────────────────────────────────────────────────
 function MesasMatrix({ primaryIntel, primaryThinking }) {
   const thinkingOrder = ["A", "B", "C", "D"];
   return (
@@ -722,19 +869,12 @@ function MesasMatrix({ primaryIntel, primaryThinking }) {
           const mesa = MATRIX[primaryIntel][tKey];
           const isActive = tKey === primaryThinking;
           return (
-            <div
-              key={tKey}
-              className="mesa-card"
-              style={{
-                background: isActive ? t.bg : "rgba(0,0,0,0.18)",
-                borderColor: isActive ? t.border : "rgba(255,255,255,0.08)",
-                boxShadow: isActive ? `0 3px 20px ${t.glow}` : "none",
-              }}
-            >
-              <div
-                className="mesa-tipo-badge"
-                style={{ background: isActive ? t.badge : "rgba(255,255,255,0.06)", color: isActive ? t.color : "rgba(255,255,255,0.4)" }}
-              >
+            <div key={tKey} className="mesa-card" style={{
+              background: isActive ? t.bg : "rgba(0,0,0,0.18)",
+              borderColor: isActive ? t.border : "rgba(255,255,255,0.08)",
+              boxShadow: isActive ? `0 3px 20px ${t.glow}` : "none",
+            }}>
+              <div className="mesa-tipo-badge" style={{ background: isActive ? t.badge : "rgba(255,255,255,0.06)", color: isActive ? t.color : "rgba(255,255,255,0.4)" }}>
                 <span className="mesa-tipo-dot" style={{ background: isActive ? t.color : "rgba(255,255,255,0.3)" }} />
                 {t.label} · {t.name}
                 {isActive && <span style={{ marginLeft: 3, fontSize: 7 }}>★ TU PERFIL</span>}
@@ -757,6 +897,7 @@ function MesasMatrix({ primaryIntel, primaryThinking }) {
 function IntroScreen({ onStart }) {
   return (
     <div className="intro-grid screen-enter">
+      {/* LEFT: título, botón, stats fijos */}
       <div className="intro-left">
         <div className="intro-logo-wrap"><AiModeLogo scale={1} /></div>
         <div className="intro-tagline">Activa el modo IA. Enciende tu vida</div>
@@ -774,6 +915,8 @@ function IntroScreen({ onStart }) {
           <div className="stat-item"><span className="stat-num">6</span><span className="stat-label">Preguntas</span></div>
         </div>
       </div>
+
+      {/* RIGHT: robot + pills + CONTADORES EN VIVO */}
       <div className="intro-right">
         <div className="intro-circuit-corner-l"><CircuitCorner color="#CDF815" size={110} /></div>
         <div className="intro-circuit-corner-r"><CircuitCorner color="#CDF815" size={110} /></div>
@@ -794,13 +937,16 @@ function IntroScreen({ onStart }) {
             <line x1="76" y1="9" x2="160" y2="9" stroke="#CDF815" strokeWidth="1"/>
           </svg>
         </div>
-        <div className="intel-pills">
+        <div className="intel-pills" style={{ marginBottom: '0.85rem' }}>
           {Object.entries(INTELLIGENCES).map(([key, intel]) => (
             <span key={key} className="intel-pill" style={{ border:`1px solid ${intel.color}44`, color:intel.color, background:`${intel.color}12` }}>
               <IntelIcon iconKey={intel.iconKey} size={12} color={intel.color}/>{intel.name}
             </span>
           ))}
         </div>
+
+        {/* ★ CONTADORES EN VIVO — aparecen aquí en la pantalla principal */}
+        <IntroLiveCounter />
       </div>
     </div>
   );
@@ -928,17 +1074,14 @@ function ResultScreen({ answers, onRestart }) {
                 </div>
                 <div className="result-tag">Tu inteligencia dominante</div>
                 <div className="result-intel-name">[{primary.name}]</div>
-                <div
-                  className="result-thinking-badge"
-                  style={{ background: `${thinking.color}18`, border: `1px solid ${thinking.color}44`, color: thinking.color }}
-                >
+                <div className="result-thinking-badge" style={{ background: `${thinking.color}18`, border: `1px solid ${thinking.color}44`, color: thinking.color }}>
                   {thinking.label} · {thinking.name}
                 </div>
                 <p className="result-desc">{profile.desc}</p>
               </div>
             </div>
 
-            {/* THINKING SCORES (del test actual) */}
+            {/* THINKING SCORES */}
             <div className="glass-card">
               <div className="card-label">Tu distribución por tipo de pensamiento</div>
               <div className="thinking-bars">
@@ -978,8 +1121,8 @@ function ResultScreen({ answers, onRestart }) {
             {/* MATRIX MESAS */}
             <MesasMatrix primaryIntel={primaryIntel} primaryThinking={primaryThinking} />
 
-            {/* STATS GLOBALES — contadores de todos los tests */}
-            <StatsPanel highlightThinking={primaryThinking} />
+            {/* STATS GLOBALES */}
+            <StatsPanel highlightThinking={primaryThinking} highlightIntel={primaryIntel} />
 
             {/* INTEL BARS */}
             <div className="glass-card">
@@ -1002,6 +1145,18 @@ function ResultScreen({ answers, onRestart }) {
                 })}
               </div>
             </div>
+
+
+
+            <DownloadSection 
+              primary={primary} 
+              thinking={thinking} 
+              profile={profile}
+              matrixItem={MATRIX[primaryIntel][primaryThinking]}
+              primaryIntel={primaryIntel}       
+              primaryThinking={primaryThinking}
+            />
+
 
             <div style={{ textAlign:"center" }}>
               <button className="restart-btn" onClick={onRestart} style={{ margin:"0 auto" }}>↺ Repetir el test</button>
@@ -1063,9 +1218,8 @@ export default function MultipleIntelligencesTest() {
     } else {
       setPendingAnswers(next);
       setShowLoading(true);
-      // ── Guardar resultado en storage compartido ──
-      const { primaryThinking } = computeResult(next);
-      saveTestResult(primaryThinking);
+      const { primaryIntel } = computeResult(next);
+      saveTestResult(primaryIntel);
     }
   };
 
