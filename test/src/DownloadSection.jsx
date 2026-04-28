@@ -4,11 +4,6 @@ import html2canvas from 'html2canvas';
 
 // ─── PALETA ────────────────────────────────────────────────────────────────────
 const LIME = "#CDF815";
-
-// ══════════════════════════════════════════════════════════════════════════════
-// IMPORTANTE: Consigue tu API key GRATIS en https://api.imgbb.com/
-// Es instantáneo, no necesita tarjeta. Reemplaza la de abajo.
-// ══════════════════════════════════════════════════════════════════════════════
 const IMGBB_API_KEY = "5f8423f1a627d427e0acfeb1be1fcad3";
 
 // ─── ICONOS SVG inline ────────────────────────────────────────────────────────
@@ -19,7 +14,6 @@ const IconDownload = () => (
     <line x1="12" y1="15" x2="12" y2="3"/>
   </svg>
 );
-
 const IconQR = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
@@ -28,13 +22,11 @@ const IconQR = () => (
     <rect x="14" y="19" width="2" height="2"/><rect x="18" y="18" width="3" height="3"/>
   </svg>
 );
-
 const IconCheck = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="20 6 9 17 4 12"/>
   </svg>
 );
-
 const IconLoader = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
     style={{ animation: 'spin 1s linear infinite' }}>
@@ -42,7 +34,7 @@ const IconLoader = () => (
   </svg>
 );
 
-// ─── ESTILOS del componente ────────────────────────────────────────────────────
+// ─── ESTILOS ──────────────────────────────────────────────────────────────────
 const styles = `
   @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
   @keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
@@ -112,7 +104,7 @@ const styles = `
     font-size: 10px;
     color: rgba(255,255,255,0.5);
     text-align: center;
-    max-width: 140px;
+    max-width: 160px;
     line-height: 1.5;
     font-family: 'Inter', sans-serif;
   }
@@ -193,11 +185,6 @@ const styles = `
     animation: fadeInUp 0.3s ease;
     font-family: 'Inter', sans-serif;
   }
-  .ds-status.loading {
-    color: rgba(205,248,21,0.7);
-    background: rgba(205,248,21,0.07);
-    border: 1px solid rgba(205,248,21,0.18);
-  }
   .ds-status.success {
     color: #4ADE80;
     background: rgba(74,222,128,0.08);
@@ -238,28 +225,18 @@ const styles = `
   }
 `;
 
-// ─── CERTIFICADO (renderizado fuera de pantalla) ───────────────────────────────
+// ─── CERTIFICADO OCULTO ────────────────────────────────────────────────────────
 function Certificate({ primary, thinking, profile, matrixItem, certRef }) {
   const C = primary.color;
   const T = thinking.color;
-
   return (
-    <div
-      ref={certRef}
-      style={{
-        position: 'absolute', left: '-9999px', top: 0,
-        width: '600px',
-        background: 'linear-gradient(155deg,#FF4103 0%,#7B2B12 20%,#1F1B1C 50%,#001621 100%)',
-        color: '#fff',
-        fontFamily: "'Poppins', sans-serif",
-        padding: '0',
-        overflow: 'hidden',
-      }}
-    >
-      {/* BORDE SUPERIOR */}
+    <div ref={certRef} style={{
+      position: 'absolute', left: '-9999px', top: 0,
+      width: '600px',
+      background: 'linear-gradient(155deg,#FF4103 0%,#7B2B12 20%,#1F1B1C 50%,#001621 100%)',
+      color: '#fff', fontFamily: "'Poppins', sans-serif", padding: '0', overflow: 'hidden',
+    }}>
       <div style={{ height: '4px', background: `linear-gradient(90deg, transparent, ${C}, transparent)` }} />
-
-      {/* HEADER */}
       <div style={{ padding: '32px 36px 24px', borderBottom: `1px solid rgba(255,255,255,0.08)` }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
@@ -272,79 +249,34 @@ function Certificate({ primary, thinking, profile, matrixItem, certRef }) {
           </div>
         </div>
       </div>
-
-      {/* RESULTADO PRINCIPAL */}
       <div style={{ padding: '28px 36px 24px', background: 'rgba(0,0,0,0.2)' }}>
-        <div style={{ fontSize: '9px', fontWeight: 700, letterSpacing: '3px', textTransform: 'uppercase', color: 'rgba(205,248,21,0.5)', marginBottom: '8px' }}>
-          Tu inteligencia dominante
-        </div>
-        <div style={{ fontSize: '40px', fontWeight: 900, color: C, lineHeight: 1.05, marginBottom: '10px', textShadow: `0 0 30px ${C}66` }}>
-          {primary.name}
-        </div>
-
-        {/* Badge thinking */}
-        <div style={{
-          display: 'inline-flex', alignItems: 'center', gap: '7px',
-          background: `${T}18`, border: `1px solid ${T}44`,
-          borderRadius: '50px', padding: '5px 14px', marginBottom: '16px',
-        }}>
+        <div style={{ fontSize: '9px', fontWeight: 700, letterSpacing: '3px', textTransform: 'uppercase', color: 'rgba(205,248,21,0.5)', marginBottom: '8px' }}>Tu inteligencia dominante</div>
+        <div style={{ fontSize: '40px', fontWeight: 900, color: C, lineHeight: 1.05, marginBottom: '10px', textShadow: `0 0 30px ${C}66` }}>{primary.name}</div>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', background: `${T}18`, border: `1px solid ${T}44`, borderRadius: '50px', padding: '5px 14px', marginBottom: '16px' }}>
           <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: T }} />
-          <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: T }}>
-            {thinking.label} · {thinking.name}
-          </span>
+          <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: T }}>{thinking.label} · {thinking.name}</span>
         </div>
-
-        <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.55)', lineHeight: 1.8, margin: 0, maxWidth: '460px' }}>
-          {profile.desc}
-        </p>
+        <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.55)', lineHeight: 1.8, margin: 0, maxWidth: '460px' }}>{profile.desc}</p>
       </div>
-
-      {/* DOS COLUMNAS: IA + MESA */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1px', background: 'rgba(255,255,255,0.06)' }}>
-        {/* IA Recomendada */}
         <div style={{ padding: '22px 28px', background: 'rgba(0,0,0,0.28)' }}>
-          <div style={{ fontSize: '7px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(205,248,21,0.4)', marginBottom: '10px' }}>
-            Herramienta IA recomendada
-          </div>
-          <div style={{ fontSize: '15px', fontWeight: 700, color: LIME, marginBottom: '5px', lineHeight: 1.3 }}>
-            {profile.ai}
-          </div>
-          <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.6 }}>
-            {profile.aiDesc}
-          </div>
+          <div style={{ fontSize: '7px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(205,248,21,0.4)', marginBottom: '10px' }}>Herramienta IA recomendada</div>
+          <div style={{ fontSize: '15px', fontWeight: 700, color: LIME, marginBottom: '5px', lineHeight: 1.3 }}>{profile.ai}</div>
+          <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.6 }}>{profile.aiDesc}</div>
         </div>
-
-        {/* Mesa activa */}
         <div style={{ padding: '22px 28px', background: `${T}0a` }}>
-          <div style={{ fontSize: '7px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: `${T}80`, marginBottom: '10px' }}>
-            Tu mesa de trabajo IA
-          </div>
-          <div style={{ fontSize: '15px', fontWeight: 700, color: T, marginBottom: '5px', lineHeight: 1.3 }}>
-            {matrixItem.herramienta}
-          </div>
-          <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.6 }}>
-            {matrixItem.desc}
-          </div>
+          <div style={{ fontSize: '7px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: `${T}80`, marginBottom: '10px' }}>Tu mesa de trabajo IA</div>
+          <div style={{ fontSize: '15px', fontWeight: 700, color: T, marginBottom: '5px', lineHeight: 1.3 }}>{matrixItem.herramienta}</div>
+          <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.6 }}>{matrixItem.desc}</div>
         </div>
       </div>
-
-      {/* FOOTER */}
-      <div style={{
-        padding: '16px 36px',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        borderTop: `1px solid rgba(255,255,255,0.06)`,
-        background: 'rgba(0,0,0,0.3)',
-      }}>
-        <div style={{ fontSize: '9px', color: 'rgba(255,255,255,0.25)', letterSpacing: '1px' }}>
-          Creado por <span style={{ color: 'rgba(255,255,255,0.45)' }}>Alba Gomez & Erika Veramendi</span>
-        </div>
+      <div style={{ padding: '16px 36px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: `1px solid rgba(255,255,255,0.06)`, background: 'rgba(0,0,0,0.3)' }}>
+        <div style={{ fontSize: '9px', color: 'rgba(255,255,255,0.25)', letterSpacing: '1px' }}>Creado por <span style={{ color: 'rgba(255,255,255,0.45)' }}>Alba Gomez & Erika Veramendi</span></div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
           <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: LIME, boxShadow: `0 0 6px ${LIME}` }} />
           <span style={{ fontSize: '9px', color: LIME, fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase' }}>Ai MODE · Life On</span>
         </div>
       </div>
-
-      {/* BORDE INFERIOR */}
       <div style={{ height: '3px', background: `linear-gradient(90deg, transparent, ${C}, transparent)` }} />
     </div>
   );
@@ -353,18 +285,27 @@ function Certificate({ primary, thinking, profile, matrixItem, certRef }) {
 // ─── COMPONENTE PRINCIPAL ─────────────────────────────────────────────────────
 export default function DownloadSection({ primary, thinking, profile, matrixItem, primaryIntel, primaryThinking }) {
   const certRef = useRef();
-  const [status, setStatus] = useState('idle'); // idle | generating | uploading | done | error | saved
+  const [status, setStatus] = useState('idle');
   const [imageUrl, setImageUrl] = useState(null);
   const [localBlob, setLocalBlob] = useState(null);
 
-  // QR value: si ya subimos la imagen, apunta a ella; si no, fallback a la URL con params
-  const fallbackUrl = `${window.location.origin}${window.location.pathname}?intel=${primaryIntel}&thinking=${primaryThinking}`;
-  const qrValue = imageUrl || fallbackUrl;
+  // ══════════════════════════════════════════════════════════════════════════
+  // QR SIEMPRE APUNTA AL GATE — el celular pasará por la pantalla de email
+  // antes de ver la imagen.
+  //
+  // • Sin imagen subida aún → gate con intel+thinking solamente
+  // • Con imagen subida    → gate con intel+thinking+img (para mostrar botón
+  //                          de descarga directo tras el email)
+  // ══════════════════════════════════════════════════════════════════════════
+  const baseGateUrl = `${window.location.origin}${window.location.pathname}?gate=1&intel=${primaryIntel}&thinking=${primaryThinking}`;
+
+  const qrValue = imageUrl
+    ? `${baseGateUrl}&img=${encodeURIComponent(imageUrl)}`
+    : baseGateUrl;
 
   const generateAndUpload = useCallback(async () => {
     setStatus('generating');
     try {
-      // 1. Renderizar el certificado como canvas
       const canvas = await html2canvas(certRef.current, {
         scale: 2,
         useCORS: true,
@@ -372,11 +313,9 @@ export default function DownloadSection({ primary, thinking, profile, matrixItem
         logging: false,
       });
 
-      // 2. Guardar blob local para la descarga directa también
       const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
       setLocalBlob(blob);
 
-      // 3. Subir a ImgBB
       setStatus('uploading');
       const base64 = canvas.toDataURL('image/png').split(',')[1];
       const formData = new FormData();
@@ -399,7 +338,6 @@ export default function DownloadSection({ primary, thinking, profile, matrixItem
       }
     } catch (err) {
       console.error(err);
-      // Si falla la subida, al menos permitimos descarga local
       setStatus('error');
     }
   }, [primaryIntel, primaryThinking]);
@@ -435,6 +373,7 @@ export default function DownloadSection({ primary, thinking, profile, matrixItem
         <div className="ds-label">Llévate tu resultado</div>
 
         <div className="ds-inner">
+
           {/* QR */}
           <div className="ds-qr-col">
             <div className={`ds-qr-frame ${isLoading ? 'uploading' : ''}`} style={{ border: `3px solid ${primary.color}` }}>
@@ -453,11 +392,11 @@ export default function DownloadSection({ primary, thinking, profile, matrixItem
             </div>
             <div className="ds-qr-label">
               {status === 'done'
-                ? <><strong>✓ Listo para escanear</strong>Apunta al QR con tu cámara para ver y guardar tu imagen</>
+                ? <><strong>✓ Listo · escanea ahora</strong>Tu celular pedirá tu correo y podrás descargar tu imagen</>
                 : status === 'idle'
-                ? <><strong>Genera tu QR</strong>Presiona el botón para crear tu imagen compartible</>
+                ? <><strong>Genera tu QR</strong>Primero genera la imagen, luego escanea</>
                 : status === 'error'
-                ? <><strong>QR de respaldo</strong>Apunta al QR para ver este resultado</>
+                ? <><strong>QR disponible</strong>Escanea para continuar con tu resultado</>
                 : <><strong>Procesando...</strong>Generando tu imagen personalizada</>
               }
             </div>
@@ -466,11 +405,10 @@ export default function DownloadSection({ primary, thinking, profile, matrixItem
           {/* ACCIONES */}
           <div className="ds-actions">
             <p className="ds-info">
-              Genera tu <b>imagen personalizada</b> con tu inteligencia dominante, tipo de pensamiento y herramientas IA. 
-              Luego <b>escanea el QR</b> con tu celular para descargarla.
+              Genera tu <b>imagen personalizada</b> y escanea el QR con tu celular.
+              Se te pedirá tu <b>correo</b> para desbloquear y descargar tu resultado.
             </p>
 
-            {/* Botón principal */}
             {status === 'idle' && (
               <button className="ds-btn ds-btn-primary" onClick={generateAndUpload}>
                 <IconQR /> Generar imagen + QR
@@ -492,7 +430,11 @@ export default function DownloadSection({ primary, thinking, profile, matrixItem
                 <button className="ds-btn ds-btn-secondary" onClick={downloadLocal}>
                   <IconDownload /> También guardar en esta tablet
                 </button>
-                <button className="ds-btn ds-btn-secondary" onClick={() => { setStatus('idle'); setImageUrl(null); setLocalBlob(null); }} style={{ opacity: 0.5, fontSize: '10px' }}>
+                <button
+                  className="ds-btn ds-btn-secondary"
+                  onClick={() => { setStatus('idle'); setImageUrl(null); setLocalBlob(null); }}
+                  style={{ opacity: 0.5, fontSize: '10px' }}
+                >
                   ↺ Regenerar
                 </button>
               </>
@@ -514,14 +456,15 @@ export default function DownloadSection({ primary, thinking, profile, matrixItem
               </>
             )}
 
-            {/* Hint */}
             <div className="ds-hint">
               <div className="ds-hint-dot" />
               <span>
-                El QR abre directamente tu imagen en el celular. Solo presiona "descargar" desde el navegador móvil para guardarla en tu galería.
+                Al escanear el QR, tu celular pedirá un correo antes de mostrar la imagen.
+                Sin spam — solo guardamos tu perfil.
               </span>
             </div>
           </div>
+
         </div>
       </div>
     </>

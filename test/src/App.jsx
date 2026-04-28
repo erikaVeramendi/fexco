@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import DownloadSection from './DownloadSection';
+import EmailGatePage from './EmailGatePage';   
 
 // ─── PALETA OFICIAL ───────────────────────────────────────────────────────────
 const C = {
@@ -167,36 +168,26 @@ function RobotImage({ size = 260, style = {} }) {
   );
 }
 
-// ─── CIRCUIT BOARD DECORATION (reemplaza CircuitCorner) ───────────────────────
+// ─── CIRCUIT BOARD DECORATION ─────────────────────────────────────────────────
 function CircuitBoard({ color = "#CDF815", flip = false, size = 140 }) {
   const w = size;
   const h = size * 1.55;
   const style = flip ? { transform: "scaleX(-1)" } : {};
   return (
     <svg width={w} height={h} viewBox="0 0 140 217" fill="none" xmlns="http://www.w3.org/2000/svg" style={style}>
-      {/* Borde exterior tipo PCB */}
       <rect x="4" y="4" width="132" height="209" rx="6" stroke={color} strokeWidth="1.2" fill="none" opacity="0.6"/>
-      {/* Líneas horizontales de bus */}
       <line x1="4" y1="28" x2="136" y2="28" stroke={color} strokeWidth="0.7" opacity="0.4"/>
       <line x1="4" y1="189" x2="136" y2="189" stroke={color} strokeWidth="0.7" opacity="0.4"/>
-
-      {/* Componente IC superior izquierdo */}
       <rect x="14" y="38" width="42" height="28" rx="3" stroke={color} strokeWidth="1" fill="none"/>
-      {/* Pines IC superior */}
       <line x1="20" y1="38" x2="20" y2="32" stroke={color} strokeWidth="1" strokeLinecap="round"/>
       <line x1="28" y1="38" x2="28" y2="32" stroke={color} strokeWidth="1" strokeLinecap="round"/>
       <line x1="36" y1="38" x2="36" y2="32" stroke={color} strokeWidth="1" strokeLinecap="round"/>
       <line x1="44" y1="38" x2="44" y2="32" stroke={color} strokeWidth="1" strokeLinecap="round"/>
-      {/* Pines IC inferior */}
       <line x1="20" y1="66" x2="20" y2="72" stroke={color} strokeWidth="1" strokeLinecap="round"/>
       <line x1="28" y1="66" x2="28" y2="72" stroke={color} strokeWidth="1" strokeLinecap="round"/>
       <line x1="36" y1="66" x2="36" y2="72" stroke={color} strokeWidth="1" strokeLinecap="round"/>
       <line x1="44" y1="66" x2="44" y2="72" stroke={color} strokeWidth="1" strokeLinecap="round"/>
-      {/* Muesca IC */}
-      <path d="M35 38 A0 0 0 0 1 35 38" stroke={color} strokeWidth="1"/>
       <circle cx="35" cy="38" r="3" stroke={color} strokeWidth="0.8" fill="none"/>
-
-      {/* Componente IC superior derecho */}
       <rect x="84" y="38" width="42" height="28" rx="3" stroke={color} strokeWidth="1" fill="none"/>
       <line x1="90" y1="38" x2="90" y2="32" stroke={color} strokeWidth="1" strokeLinecap="round"/>
       <line x1="98" y1="38" x2="98" y2="32" stroke={color} strokeWidth="1" strokeLinecap="round"/>
@@ -207,58 +198,39 @@ function CircuitBoard({ color = "#CDF815", flip = false, size = 140 }) {
       <line x1="106" y1="66" x2="106" y2="72" stroke={color} strokeWidth="1" strokeLinecap="round"/>
       <line x1="114" y1="66" x2="114" y2="72" stroke={color} strokeWidth="1" strokeLinecap="round"/>
       <circle cx="105" cy="38" r="3" stroke={color} strokeWidth="0.8" fill="none"/>
-
-      {/* Trazas de circuito horizontales */}
       <line x1="56" y1="52" x2="84" y2="52" stroke={color} strokeWidth="1.2" strokeLinecap="round"/>
       <line x1="14" y1="80" x2="60" y2="80" stroke={color} strokeWidth="1" strokeLinecap="round"/>
       <line x1="80" y1="80" x2="126" y2="80" stroke={color} strokeWidth="1" strokeLinecap="round"/>
-
-      {/* Trazas verticales con esquinas 90° */}
       <path d="M60 80 L60 92 L70 92 L70 108" stroke={color} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
       <path d="M80 80 L80 92 L70 92" stroke={color} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-
-      {/* Chip central grande */}
       <rect x="42" y="108" width="56" height="40" rx="4" stroke={color} strokeWidth="1.3" fill="none"/>
-      {/* Pines laterales izquierda */}
       <line x1="42" y1="116" x2="34" y2="116" stroke={color} strokeWidth="1.1" strokeLinecap="round"/>
       <line x1="42" y1="124" x2="34" y2="124" stroke={color} strokeWidth="1.1" strokeLinecap="round"/>
       <line x1="42" y1="132" x2="34" y2="132" stroke={color} strokeWidth="1.1" strokeLinecap="round"/>
       <line x1="42" y1="140" x2="34" y2="140" stroke={color} strokeWidth="1.1" strokeLinecap="round"/>
-      {/* Pines laterales derecha */}
       <line x1="98" y1="116" x2="106" y2="116" stroke={color} strokeWidth="1.1" strokeLinecap="round"/>
       <line x1="98" y1="124" x2="106" y2="124" stroke={color} strokeWidth="1.1" strokeLinecap="round"/>
       <line x1="98" y1="132" x2="106" y2="132" stroke={color} strokeWidth="1.1" strokeLinecap="round"/>
       <line x1="98" y1="140" x2="106" y2="140" stroke={color} strokeWidth="1.1" strokeLinecap="round"/>
-      {/* Texto chip */}
       <text x="70" y="131" textAnchor="middle" fill={color} fontSize="6" fontFamily="monospace" opacity="0.8">AI</text>
       <text x="70" y="140" textAnchor="middle" fill={color} fontSize="5" fontFamily="monospace" opacity="0.6">CPU</text>
-      {/* Punto de pin 1 */}
       <circle cx="46" cy="112" r="1.5" fill={color} opacity="0.7"/>
-
-      {/* Resistencias / capacitores pequeños */}
       <rect x="20" y="88" width="14" height="6" rx="1.5" stroke={color} strokeWidth="0.8" fill="none"/>
       <line x1="14" y1="91" x2="20" y2="91" stroke={color} strokeWidth="0.8" strokeLinecap="round"/>
       <line x1="34" y1="91" x2="40" y2="91" stroke={color} strokeWidth="0.8" strokeLinecap="round"/>
-
       <rect x="100" y="88" width="14" height="6" rx="1.5" stroke={color} strokeWidth="0.8" fill="none"/>
       <line x1="94" y1="91" x2="100" y2="91" stroke={color} strokeWidth="0.8" strokeLinecap="round"/>
       <line x1="114" y1="91" x2="120" y2="91" stroke={color} strokeWidth="0.8" strokeLinecap="round"/>
-
-      {/* Círculos de via/pad */}
       <circle cx="14" cy="52" r="3.5" stroke={color} strokeWidth="0.9" fill="none"/>
       <circle cx="14" cy="52" r="1.2" fill={color} opacity="0.6"/>
       <circle cx="126" cy="52" r="3.5" stroke={color} strokeWidth="0.9" fill="none"/>
       <circle cx="126" cy="52" r="1.2" fill={color} opacity="0.6"/>
       <circle cx="14" cy="80" r="3" stroke={color} strokeWidth="0.8" fill="none"/>
       <circle cx="126" cy="80" r="3" stroke={color} strokeWidth="0.8" fill="none"/>
-
-      {/* Trazas inferiores */}
       <path d="M34 140 L20 140 L20 160" stroke={color} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
       <path d="M106 140 L120 140 L120 160" stroke={color} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
       <line x1="20" y1="160" x2="120" y2="160" stroke={color} strokeWidth="1" strokeLinecap="round"/>
       <path d="M60 160 L60 172 L80 172 L80 160" stroke={color} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-
-      {/* Conector inferior tipo barra */}
       <rect x="16" y="193" width="108" height="14" rx="2.5" stroke={color} strokeWidth="0.9" fill="none"/>
       <line x1="24" y1="193" x2="24" y2="207" stroke={color} strokeWidth="0.6" opacity="0.5"/>
       <line x1="32" y1="193" x2="32" y2="207" stroke={color} strokeWidth="0.6" opacity="0.5"/>
@@ -272,8 +244,6 @@ function CircuitBoard({ color = "#CDF815", flip = false, size = 140 }) {
       <line x1="96" y1="193" x2="96" y2="207" stroke={color} strokeWidth="0.6" opacity="0.5"/>
       <line x1="104" y1="193" x2="104" y2="207" stroke={color} strokeWidth="0.6" opacity="0.5"/>
       <line x1="112" y1="193" x2="112" y2="207" stroke={color} strokeWidth="0.6" opacity="0.5"/>
-
-      {/* Pines externos izquierda (edge connectors) */}
       <line x1="0" y1="116" x2="4" y2="116" stroke={color} strokeWidth="1.2" strokeLinecap="round"/>
       <line x1="0" y1="128" x2="4" y2="128" stroke={color} strokeWidth="1.2" strokeLinecap="round"/>
       <line x1="0" y1="140" x2="4" y2="140" stroke={color} strokeWidth="1.2" strokeLinecap="round"/>
@@ -496,6 +466,18 @@ const QUESTIONS = [
 const LETTERS = ["A", "B", "C", "D"];
 
 // ─── SCORING LOGIC ────────────────────────────────────────────────────────────
+const INTEL_WEIGHTS = {
+  logica:        0.40,
+  linguistica:   1.00,
+  visual:        2.20,
+  musical:       1.05,
+  kinestesica:   1.00,
+  interpersonal: 1.00,
+  intrapersonal: 2.10,
+  naturalista:   1.05,
+};
+const THINKING_WEIGHTS = { A: 1.45, B: 1.00, C: 1.00, D: 1.00 };
+
 function computeResult(answers) {
   const intelScores = {};
   const thinkingScores = { A: 0, B: 0, C: 0, D: 0 };
@@ -504,11 +486,30 @@ function computeResult(answers) {
     a.intel.forEach(i => { intelScores[i] = (intelScores[i] || 0) + 1; });
     thinkingScores[a.thinking]++;
   });
-  const sortedIntel = Object.entries(intelScores).sort((a, b) => b[1] - a[1]);
-  const sortedThinking = Object.entries(thinkingScores).sort((a, b) => b[1] - a[1]);
+
+  // ── Bonus suave por respuestas clave ─────────────────────────────────────
+  // P1=C → leve empuje a visual
+  if (answers[0]?.intel.includes('visual'))
+    intelScores['visual'] += 0.6;
+  // P2=A + P4=D (ambas suman intrapersonal) → leve empuje
+  if (answers[1]?.intel.includes('intrapersonal') && answers[3]?.intel.includes('intrapersonal'))
+    intelScores['intrapersonal'] += 0.6;
+  // Si cualquiera de los dos → pequeño empuje thinking A
+  if (answers[0]?.intel.includes('visual') || answers[1]?.intel.includes('intrapersonal'))
+    thinkingScores['A'] += 0.3;
+  // ── Fin bonus ─────────────────────────────────────────────────────────────
+
+  const weightedIntel = Object.fromEntries(
+    Object.entries(intelScores).map(([k, v]) => [k, v * (INTEL_WEIGHTS[k] || 1.0)])
+  );
+  const weightedThinking = Object.fromEntries(
+    Object.entries(thinkingScores).map(([k, v]) => [k, v * (THINKING_WEIGHTS[k] || 1.0)])
+  );
+  const sortedIntel    = Object.entries(weightedIntel).sort((a, b) => b[1] - a[1]);
+  const sortedThinking = Object.entries(weightedThinking).sort((a, b) => b[1] - a[1]);
   return {
-    primaryIntel: sortedIntel[0][0],
-    secondaryIntel: sortedIntel[1][0],
+    primaryIntel:    sortedIntel[0][0],
+    secondaryIntel:  sortedIntel[1][0],
     primaryThinking: sortedThinking[0][0],
     intelScores,
     thinkingScores,
@@ -534,7 +535,6 @@ const css = `
   .circuit-deco{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
   .mit-container{position:relative;z-index:1;width:100%;min-height:100vh;display:flex;align-items:stretch;}
 
-  /* SIDE */
   .side-panel{
     width:38%;min-height:100vh;display:flex;flex-direction:column;
     justify-content:flex-start;align-items:center;
@@ -560,16 +560,12 @@ const css = `
   .intel-pills{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;}
   .intel-pill{display:inline-flex;align-items:center;gap:5px;font-size:9px;padding:4px 9px;border-radius:50px;font-weight:500;transition:all 0.3s;}
 
-  /* MAIN */
   .main-panel{flex:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:3rem 4rem;overflow-y:auto;}
   .main-inner{width:100%;max-width:620px;}
 
-  /* INTRO — full two-column layout */
   .intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;width:100%;min-height:100vh;align-items:stretch;}
-  /* CAMBIO: intro-left ahora usa justify-content flex-start para subir el logo */
   .intro-left{display:flex;flex-direction:column;justify-content:flex-start;align-items:flex-start;padding:3rem 4rem 4rem 5rem;border-right:1px solid rgba(205,248,21,0.1);position:relative;overflow:hidden;}
   .intro-right{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:3rem 2rem;background:rgba(0,0,0,0.12);position:relative;overflow:hidden;}
-  /* CAMBIO: el logo en intro ahora tiene más espacio arriba para aparecer más arriba */
   .intro-logo-wrap{margin-bottom:1.5rem;margin-top:0.5rem;}
   .intro-tagline{font-size:10px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:rgba(205,248,21,0.65);margin-bottom:1.25rem;}
   .intro-badge{display:inline-flex;align-items:center;gap:7px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#CDF815;border:1px solid rgba(205,248,21,0.28);background:rgba(205,248,21,0.07);padding:7px 16px;border-radius:50px;margin-bottom:1.5rem;}
@@ -586,23 +582,12 @@ const css = `
   .intro-circuit-top{position:absolute;top:14px;left:50%;transform:translateX(-50%);opacity:0.3;pointer-events:none;z-index:1;}
   .intro-circuit-bottom{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);opacity:0.3;pointer-events:none;z-index:1;}
 
-  /* STATS ROW — intro screen */
   .stats-row{display:flex;gap:2.25rem;margin-top:1.75rem;}
   .stat-item{text-align:center;}
   .stat-num{font-family:'Poppins',sans-serif;font-size:28px;font-weight:900;color:#CDF815;display:block;line-height:1;margin-bottom:4px;text-shadow:0 0 14px rgba(205,248,21,0.5);}
   .stat-label{font-size:8px;color:rgba(255,255,255,0.38);letter-spacing:2px;text-transform:uppercase;font-weight:600;}
 
-  /* LIVE COUNTER BLOCK */
-  .intro-live-counter{
-    width:100%;max-width:320px;
-    background:rgba(0,0,0,0.28);
-    border:1px solid rgba(205,248,21,0.18);
-    border-radius:14px;
-    padding:1.1rem 1.25rem;
-    margin-top:1.25rem;
-    position:relative;overflow:hidden;
-    backdrop-filter:blur(12px);
-  }
+  .intro-live-counter{width:100%;max-width:320px;background:rgba(0,0,0,0.28);border:1px solid rgba(205,248,21,0.18);border-radius:14px;padding:1.1rem 1.25rem;margin-top:1.25rem;position:relative;overflow:hidden;backdrop-filter:blur(12px);}
   .intro-live-counter::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,#CDF815,transparent);}
   .ilc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.85rem;}
   .ilc-label{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(205,248,21,0.55);}
@@ -619,12 +604,10 @@ const css = `
   .ilc-bar-fill{height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(0.4,0,0.2,1);}
   .ilc-bar-num{font-size:9px;font-weight:800;width:22px;text-align:right;flex-shrink:0;}
 
-  /* TRANSITIONS */
   .screen-enter{animation:screenIn 0.5s cubic-bezier(0.16,1,0.3,1) forwards;}
   @keyframes screenIn{from{opacity:0;transform:translateY(18px) scale(0.98);}to{opacity:1;transform:translateY(0) scale(1);}}
   @keyframes screenOut{from{opacity:1;transform:translateY(0);}to{opacity:0;transform:translateY(-14px);}}
 
-  /* QUIZ */
   .progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;}
   .progress-label{font-size:9px;color:rgba(205,248,21,0.45);letter-spacing:2.5px;text-transform:uppercase;font-weight:700;}
   .progress-frac{font-family:'Poppins',sans-serif;font-size:12px;color:#CDF815;font-weight:800;}
@@ -651,7 +634,6 @@ const css = `
   .opt-text{font-size:13px;color:rgba(255,255,255,0.65);line-height:1.5;font-weight:500;transition:color 0.18s;}
   .option-btn:hover .opt-text,.option-btn.selected .opt-text{color:#fff;}
 
-  /* RESULT */
   .result-hero{background:rgba(0,0,0,0.28);border:1px solid rgba(205,248,21,0.18);border-radius:16px;padding:2.25rem 1.75rem;margin-bottom:1.1rem;text-align:center;position:relative;overflow:hidden;}
   .result-hero::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,#CDF815,transparent);}
   .result-hero-content{position:relative;z-index:1;}
@@ -676,7 +658,6 @@ const css = `
   .bar-fill{height:100%;border-radius:5px;transition:width 1.3s cubic-bezier(0.4,0,0.2,1);}
   .bar-num{font-size:11px;width:16px;text-align:right;flex-shrink:0;font-weight:800;}
 
-  /* STATS PANEL */
   .stats-panel-total{display:flex;align-items:center;gap:14px;margin-bottom:1.1rem;padding:14px 18px;background:rgba(205,248,21,0.06);border:1px solid rgba(205,248,21,0.2);border-radius:11px;}
   .stats-total-num{font-family:'Poppins',sans-serif;font-size:36px;font-weight:900;color:#CDF815;line-height:1;text-shadow:0 0 18px rgba(205,248,21,0.45);}
   .stats-total-label{font-size:12px;color:rgba(255,255,255,0.5);line-height:1.6;}
@@ -690,7 +671,6 @@ const css = `
   .thinking-stat-fill{height:100%;border-radius:5px;transition:width 1.2s cubic-bezier(0.4,0,0.2,1);}
   .thinking-stat-nums{font-size:11px;width:60px;text-align:right;flex-shrink:0;font-weight:800;opacity:0.9;}
 
-  /* MESAS */
   .mesas-section{margin-bottom:1.1rem;}
   .matrix-intro{font-size:12px;color:rgba(255,255,255,0.5);line-height:1.7;margin-bottom:1rem;}
   .mesas-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
@@ -710,7 +690,6 @@ const css = `
   .restart-btn{display:flex;align-items:center;justify-content:center;gap:7px;font-size:11px;font-weight:700;padding:10px 26px;border-radius:50px;border:1px solid rgba(205,248,21,0.28);background:transparent;color:rgba(205,248,21,0.55);cursor:pointer;transition:all 0.22s;font-family:'Poppins',sans-serif;letter-spacing:0.5px;margin-top:1.1rem;text-transform:uppercase;}
   .restart-btn:hover{border-color:#CDF815;color:#CDF815;background:rgba(205,248,21,0.07);}
 
-  /* LOADING */
   .loading-screen{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(155deg,#FF4103 0%,#A8320E 15%,#4A2419 35%,#1F1B1C 55%,#031720 80%,#001621 100%);animation:loadingFadeOut 0.6s ease-in-out forwards;animation-delay:2.8s;}
   @keyframes loadingFadeOut{from{opacity:1;}to{opacity:0;pointer-events:none;}}
   .loading-center{display:flex;flex-direction:column;align-items:center;}
@@ -723,7 +702,6 @@ const css = `
   .loading-logo-wrap{margin-top:1.75rem;animation:titleReveal 0.7s 0.9s both;}
   .loading-dot-live{width:5px;height:5px;border-radius:50%;background:#CDF815;box-shadow:0 0 7px #CDF815;animation:blink 1.2s ease-in-out infinite;}
 
-  /* CREDITS */
   .credits-footer{position:fixed;bottom:0;left:0;right:0;z-index:50;display:flex;justify-content:center;align-items:center;padding:10px 20px;background:linear-gradient(to top,rgba(0,22,33,0.97) 0%,rgba(0,22,33,0.0) 100%);pointer-events:none;}
   .credits-inner{display:inline-flex;align-items:center;gap:8px;background:rgba(205,248,21,0.05);border:1px solid rgba(205,248,21,0.18);border-radius:50px;padding:7px 18px;backdrop-filter:blur(10px);}
   .credits-label{font-size:9px;font-weight:600;color:rgba(255,255,255,0.3);letter-spacing:1.8px;text-transform:uppercase;white-space:nowrap;}
@@ -731,7 +709,6 @@ const css = `
   .credits-name{font-family:'Poppins',sans-serif;font-size:11px;font-weight:800;color:#CDF815;letter-spacing:0.4px;white-space:nowrap;text-shadow:0 0 9px rgba(205,248,21,0.35);}
   .credits-sep{font-size:10px;color:rgba(205,248,21,0.22);padding:0 1px;}
 
-  /* RESPONSIVE */
   @media (max-width:900px){
     .intro-grid{grid-template-columns:1fr;min-height:auto;}
     .intro-left{padding:3rem 2rem 2rem;align-items:center;text-align:center;border-right:none;border-bottom:1px solid rgba(205,248,21,0.1);}
@@ -758,18 +735,10 @@ const css = `
 function BgDeco() {
   return (
     <div className="circuit-deco">
-      <div style={{ position:"absolute", left:-18, top:"8%", opacity:0.09 }}>
-        <CircuitBoard color="#CDF815" size={130} />
-      </div>
-      <div style={{ position:"absolute", right:-18, top:"8%", opacity:0.09 }}>
-        <CircuitBoard color="#CDF815" size={130} flip={true} />
-      </div>
-      <div style={{ position:"absolute", left:-18, bottom:"4%", opacity:0.06 }}>
-        <CircuitBoard color="#CDF815" size={95} />
-      </div>
-      <div style={{ position:"absolute", right:-18, bottom:"4%", opacity:0.06 }}>
-        <CircuitBoard color="#CDF815" size={95} flip={true} />
-      </div>
+      <div style={{ position:"absolute", left:-18, top:"8%", opacity:0.09 }}><CircuitBoard color="#CDF815" size={130} /></div>
+      <div style={{ position:"absolute", right:-18, top:"8%", opacity:0.09 }}><CircuitBoard color="#CDF815" size={130} flip={true} /></div>
+      <div style={{ position:"absolute", left:-18, bottom:"4%", opacity:0.06 }}><CircuitBoard color="#CDF815" size={95} /></div>
+      <div style={{ position:"absolute", right:-18, bottom:"4%", opacity:0.06 }}><CircuitBoard color="#CDF815" size={95} flip={true} /></div>
     </div>
   );
 }
@@ -783,43 +752,31 @@ function IntroLiveCounter() {
     const params = new URLSearchParams(window.location.search);
     const qIntel = params.get('intel');
     const qThinking = params.get('thinking');
-
-    if (qIntel && qThinking) {
-      setBarsReady(false);
-      setTimeout(() => setBarsReady(true), 600);
-    }
-
+    if (qIntel && qThinking) { setBarsReady(false); setTimeout(() => setBarsReady(true), 600); }
     loadStats().then(s => {
       if (s) setStats(s);
-      if (!qIntel) {
-        setTimeout(() => setBarsReady(true), 400);
-      }
+      if (!qIntel) setTimeout(() => setBarsReady(true), 400);
     });
   }, []);
 
   const intelOrder = ['logica','linguistica','visual','musical','kinestesica','interpersonal','intrapersonal','naturalista'];
 
-  if (!stats) {
-    return (
-      <div className="intro-live-counter">
-        <div className="ilc-header">
-          <span className="ilc-label">Estadísticas globales</span>
-          <span className="ilc-live"><span className="ilc-dot"/>En vivo</span>
-        </div>
-        <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', textAlign: 'center', padding: '0.5rem 0' }}>
-          Cargando datos...
-        </div>
+  if (!stats) return (
+    <div className="intro-live-counter">
+      <div className="ilc-header">
+        <span className="ilc-label">Estadísticas globales</span>
+        <span className="ilc-live"><span className="ilc-dot"/>En vivo</span>
       </div>
-    );
-  }
+      <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', textAlign: 'center', padding: '0.5rem 0' }}>Cargando datos...</div>
+    </div>
+  );
 
   const maxVal = Math.max(...intelOrder.map(k => stats[k] || 0), 1);
-
   return (
     <div className="intro-live-counter">
       <div className="ilc-header">
         <span className="ilc-label">Estadísticas globales</span>
-        <span className="ilc-live"><span className="ilc-dot"/>En vivo · Supabase</span>
+        <span className="ilc-live"><span className="ilc-dot"/>En vivo </span>
       </div>
       <div className="ilc-total-row">
         <span className="ilc-total-num">{stats.total}</span>
@@ -832,16 +789,10 @@ function IntroLiveCounter() {
           const barW = barsReady && maxVal > 0 ? `${(val / maxVal) * 100}%` : '0%';
           return (
             <div key={key} className="ilc-bar-row">
-              <div className="ilc-bar-icon">
-                <IntelIcon iconKey={intel.iconKey} size={11} color={intel.color}/>
-              </div>
+              <div className="ilc-bar-icon"><IntelIcon iconKey={intel.iconKey} size={11} color={intel.color}/></div>
               <span className="ilc-bar-name" style={{ color: intel.color }}>{intel.name}</span>
               <div className="ilc-bar-track" style={{ background: `${intel.color}16` }}>
-                <div className="ilc-bar-fill" style={{
-                  width: barW,
-                  background: `linear-gradient(90deg,${intel.color}70,${intel.color})`,
-                  boxShadow: `0 0 5px ${intel.glow}`,
-                }}/>
+                <div className="ilc-bar-fill" style={{ width: barW, background: `linear-gradient(90deg,${intel.color}70,${intel.color})`, boxShadow: `0 0 5px ${intel.glow}` }}/>
               </div>
               <span className="ilc-bar-num" style={{ color: intel.color }}>{val}</span>
             </div>
@@ -858,10 +809,7 @@ function StatsPanel({ highlightThinking, highlightIntel }) {
   const [barsReady, setBarsReady] = useState(false);
 
   useEffect(() => {
-    loadStats().then(s => {
-      setStats(s);
-      setTimeout(() => setBarsReady(true), 300);
-    });
+    loadStats().then(s => { setStats(s); setTimeout(() => setBarsReady(true), 300); });
   }, []);
 
   if (!stats) return (
@@ -883,9 +831,7 @@ function StatsPanel({ highlightThinking, highlightIntel }) {
           <div className="stats-total-live"><span className="stats-total-dot"/>Datos en tiempo real · Supabase</div>
         </div>
       </div>
-      <div className="card-label" style={{ marginTop: '1rem', marginBottom: '0.7rem' }}>
-        Distribución global por inteligencia
-      </div>
+      <div className="card-label" style={{ marginTop: '1rem', marginBottom: '0.7rem' }}>Distribución global por inteligencia</div>
       <div className="thinking-stats-bars">
         {intelOrder.map(key => {
           const intel = INTELLIGENCES[key];
@@ -907,11 +853,7 @@ function StatsPanel({ highlightThinking, highlightIntel }) {
                 </span>
               </div>
               <div className="thinking-stat-track" style={{ background: `${intel.color}16` }}>
-                <div className="thinking-stat-fill" style={{
-                  width: barW,
-                  background: `linear-gradient(90deg,${intel.color}70,${intel.color})`,
-                  boxShadow: isHighlight ? `0 0 8px ${intel.glow}` : 'none',
-                }}/>
+                <div className="thinking-stat-fill" style={{ width: barW, background: `linear-gradient(90deg,${intel.color}70,${intel.color})`, boxShadow: isHighlight ? `0 0 8px ${intel.glow}` : 'none' }}/>
               </div>
               <div className="thinking-stat-nums" style={{ color: intel.color }}>
                 {val} <span style={{ fontSize: 9, opacity: 0.6 }}>({pct}%)</span>
@@ -951,12 +893,8 @@ function MesasMatrix({ primaryIntel, primaryThinking }) {
                 {t.label} · {t.name}
                 {isActive && <span style={{ marginLeft: 3, fontSize: 7 }}>★ TU PERFIL</span>}
               </div>
-              <div className="mesa-herramienta" style={{ color: isActive ? t.color : "rgba(255,255,255,0.75)" }}>
-                {mesa.herramienta}
-              </div>
-              <div className="mesa-desc" style={{ color: isActive ? t.color : "rgba(255,255,255,0.4)" }}>
-                {mesa.desc}
-              </div>
+              <div className="mesa-herramienta" style={{ color: isActive ? t.color : "rgba(255,255,255,0.75)" }}>{mesa.herramienta}</div>
+              <div className="mesa-desc" style={{ color: isActive ? t.color : "rgba(255,255,255,0.4)" }}>{mesa.desc}</div>
             </div>
           );
         })}
@@ -969,9 +907,7 @@ function MesasMatrix({ primaryIntel, primaryThinking }) {
 function IntroScreen({ onStart }) {
   return (
     <div className="intro-grid screen-enter">
-      {/* LEFT: título, botón, stats — contenido arriba */}
       <div className="intro-left">
-        {/* CAMBIO: logo arriba con margin-top pequeño */}
         <div className="intro-logo-wrap"><AiModeLogo scale={1} /></div>
         <div className="intro-tagline">Activa el modo IA. Enciende tu vida</div>
         <div className="intro-badge">Test de Inteligencias Múltiples</div>
@@ -988,8 +924,6 @@ function IntroScreen({ onStart }) {
           <div className="stat-item"><span className="stat-num">6</span><span className="stat-label">Preguntas</span></div>
         </div>
       </div>
-
-      {/* RIGHT: robot + pills + contadores */}
       <div className="intro-right">
         <div className="intro-circuit-corner-l"><CircuitBoard color="#CDF815" size={110} /></div>
         <div className="intro-circuit-corner-r"><CircuitBoard color="#CDF815" size={110} flip={true} /></div>
@@ -1000,9 +934,7 @@ function IntroScreen({ onStart }) {
             <line x1="76" y1="9" x2="160" y2="9" stroke="#CDF815" strokeWidth="1"/>
           </svg>
         </div>
-        <div className="intro-robot-wrap">
-          <RobotImage size={300} />
-        </div>
+        <div className="intro-robot-wrap"><RobotImage size={300} /></div>
         <div className="intro-circuit-bottom">
           <svg width="160" height="18" fill="none">
             <line x1="0" y1="9" x2="64" y2="9" stroke="#CDF815" strokeWidth="1"/>
@@ -1048,7 +980,6 @@ function QuizScreen({ qIndex, onAnswer }) {
 
   return (
     <>
-      {/* CAMBIO: side-panel ahora align-items flex-start, contenido arriba */}
       <div className="side-panel">
         <div className="side-logo-wrap"><AiModeLogo scale={0.82} /></div>
         <div className="side-robot-wrap"><RobotImage size={140} /></div>
@@ -1081,11 +1012,9 @@ function QuizScreen({ qIndex, onAnswer }) {
             <div className="q-text">{q.text}</div>
             <div className="options-list">
               {q.options.map((opt, i) => (
-                <button
-                  key={i}
+                <button key={i}
                   className={`option-btn ${selected === i ? "selected" : ""} ${disabled && selected !== i ? "disabled" : ""}`}
-                  onClick={() => handleSelect(i)}
-                >
+                  onClick={() => handleSelect(i)}>
                   <div className="opt-letter">{LETTERS[i]}</div>
                   <div className="opt-text">{opt.text}</div>
                 </button>
@@ -1104,19 +1033,17 @@ function ResultScreen({ answers, onRestart }) {
   useEffect(() => { const t = setTimeout(() => setBarsReady(true), 350); return () => clearTimeout(t); }, []);
 
   const { primaryIntel, secondaryIntel, primaryThinking, intelScores, thinkingScores } = computeResult(answers);
-
-  const primary = INTELLIGENCES[primaryIntel];
+  const primary   = INTELLIGENCES[primaryIntel];
   const secondary = INTELLIGENCES[secondaryIntel];
-  const thinking = THINKING_TYPES[primaryThinking];
-  const profile = PROFILES[primaryIntel];
+  const thinking  = THINKING_TYPES[primaryThinking];
+  const profile   = PROFILES[primaryIntel];
 
-  const sortedIntel = Object.entries(intelScores).sort((a, b) => b[1] - a[1]).filter(([, v]) => v > 0);
-  const maxIntel = sortedIntel[0]?.[1] || 1;
-  const maxThinking = Math.max(...Object.values(thinkingScores), 1);
+  const sortedIntel   = Object.entries(intelScores).sort((a, b) => b[1] - a[1]).filter(([, v]) => v > 0);
+  const maxIntel      = sortedIntel[0]?.[1] || 1;
+  const maxThinking   = Math.max(...Object.values(thinkingScores), 1);
 
   return (
     <>
-      {/* CAMBIO: side-panel en resultado también arriba (justify-content: flex-start en CSS) */}
       <div className="side-panel">
         <div className="side-logo-wrap"><AiModeLogo scale={0.82} /></div>
         <div className="side-robot-wrap" style={{ filter:`drop-shadow(0 0 22px ${primary.glow})` }}>
@@ -1139,7 +1066,6 @@ function ResultScreen({ answers, onRestart }) {
         <div className="main-inner">
           <div className="screen-enter">
 
-            {/* HERO */}
             <div className="result-hero">
               <div className="result-hero-content">
                 <div className="result-icon-wrap" style={{ filter:`drop-shadow(0 0 18px ${primary.glow})` }}>
@@ -1154,7 +1080,6 @@ function ResultScreen({ answers, onRestart }) {
               </div>
             </div>
 
-            {/* THINKING SCORES */}
             <div className="glass-card">
               <div className="card-label">Tu distribución por tipo de pensamiento</div>
               <div className="thinking-bars">
@@ -1164,11 +1089,8 @@ function ResultScreen({ answers, onRestart }) {
                   const isActive = tKey === primaryThinking;
                   return (
                     <div className="thinking-bar-row" key={tKey}
-                      style={{ background: `${t.color}10`, borderColor: `${t.color}25`, opacity: isActive ? 1 : 0.6 }}
-                    >
-                      <div className="thinking-bar-name" style={{ color: t.color }}>
-                        {t.label} · {t.name}
-                      </div>
+                      style={{ background: `${t.color}10`, borderColor: `${t.color}25`, opacity: isActive ? 1 : 0.6 }}>
+                      <div className="thinking-bar-name" style={{ color: t.color }}>{t.label} · {t.name}</div>
                       <div className="thinking-bar-track" style={{ background: `${t.color}16` }}>
                         <div className="thinking-bar-fill" style={{ width: pct, background: `linear-gradient(90deg,${t.color}88,${t.color})`, boxShadow: `0 0 7px ${t.glow}` }}/>
                       </div>
@@ -1179,7 +1101,6 @@ function ResultScreen({ answers, onRestart }) {
               </div>
             </div>
 
-            {/* HERRAMIENTA */}
             <div className="glass-card">
               <div className="card-label">Tu herramienta IA recomendada</div>
               <div className="ai-row">
@@ -1191,13 +1112,9 @@ function ResultScreen({ answers, onRestart }) {
               </div>
             </div>
 
-            {/* MATRIX MESAS */}
             <MesasMatrix primaryIntel={primaryIntel} primaryThinking={primaryThinking} />
-
-            {/* STATS GLOBALES */}
             <StatsPanel highlightThinking={primaryThinking} highlightIntel={primaryIntel} />
 
-            {/* INTEL BARS */}
             <div className="glass-card">
               <div className="card-label">Tu perfil completo de inteligencias</div>
               <div className="intel-bars-container">
@@ -1219,12 +1136,12 @@ function ResultScreen({ answers, onRestart }) {
               </div>
             </div>
 
-            <DownloadSection 
-              primary={primary} 
-              thinking={thinking} 
+            <DownloadSection
+              primary={primary}
+              thinking={thinking}
               profile={profile}
               matrixItem={MATRIX[primaryIntel][primaryThinking]}
-              primaryIntel={primaryIntel}       
+              primaryIntel={primaryIntel}
               primaryThinking={primaryThinking}
             />
 
@@ -1272,6 +1189,31 @@ function CreditsFooter() {
 
 // ─── ROOT ─────────────────────────────────────────────────────────────────────
 export default function MultipleIntelligencesTest() {
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // DETECCIÓN DE QR GATE — cuando el celular escanea el QR llega aquí con
+  // ?gate=1&intel=logica&thinking=A  (y opcionalmente &img=URL_de_imgbb)
+  // En ese caso mostramos EmailGatePage en lugar de la app normal.
+  // ══════════════════════════════════════════════════════════════════════════
+  const urlParams   = new URLSearchParams(window.location.search);
+  const isGate      = urlParams.get('gate') === '1';
+  const gateIntel   = urlParams.get('intel');
+  const gateThink   = urlParams.get('thinking');
+  const gateImage   = urlParams.get('img') || null;   // URL de imgbb si ya se generó
+
+  if (isGate && gateIntel && gateThink) {
+    return (
+      <EmailGatePage
+        intel={gateIntel}
+        thinking={gateThink}
+        imageUrl={gateImage}
+      />
+    );
+  }
+  // ══════════════════════════════════════════════════════════════════════════
+  // FIN DETECCIÓN — todo lo de abajo es el flujo normal de la tablet
+  // ══════════════════════════════════════════════════════════════════════════
+
   const [screen, setScreen] = useState("intro");
   const [qIndex, setQIndex] = useState(0);
   const [answers, setAnswers] = useState([]);
